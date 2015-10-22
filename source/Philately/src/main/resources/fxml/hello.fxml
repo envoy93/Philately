@@ -1,20 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.collections.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity" minWidth="-Infinity" prefHeight="158.0"
-            prefWidth="247.0" xmlns:fx="http://javafx.com/fxml/1"
-            xmlns="http://javafx.com/javafx/2.2"
-            fx:controller="com.philately.MainController">
+<VBox id="StackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Label layoutX="24.0" layoutY="14.0" text="Login:" />
-        <Label layoutX="24.0" layoutY="63.0" text="Password:" />
-        <TextField layoutX="24.0" layoutY="30.0" prefWidth="200.0" />
-        <PasswordField layoutX="24.0" layoutY="86.0" prefWidth="200.0" />
-        <Button layoutX="168.0" layoutY="124.0" mnemonicParsing="false" text="Log In" />
+        <MenuBar>
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Close" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <ToolBar>
+            <items>
+                <Button fx:id="saveAs" mnemonicParsing="false" text="Добавить">
+                    <graphic>
+                        <ImageView fitHeight="0.0" fitWidth="0.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                            <!-- <image>
+                                 <Image url="" />
+                             </image>-->
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="profile" mnemonicParsing="false" text="Изменить">
+                    <graphic>
+                        <ImageView fitHeight="0.0" fitWidth="0.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+                            <!--<image>
+                                <Image url="" />
+                            </image>-->
+                        </ImageView>
+                    </graphic>
+                </Button>
+            <Button fx:id="saveAs1" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Удалить">
+               <graphic>
+                  <ImageView fitHeight="0.0" fitWidth="0.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" />
+               </graphic>
+            </Button>
+            </items>
+        </ToolBar>
+        <HBox fx:id="content" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+            <children>
+                <SplitPane fx:id="fileDivider" dividerPositions="0.5" focusTraversable="true" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS">
+                    <items>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                            <children>
+                                <VBox minWidth="150.0" prefWidth="150.0" spacing="5.0">
+                                    <children>
+                                        <Label text="Источник">
+                                            <font>
+                                                <Font name="System Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <ChoiceBox prefWidth="150.0">
+                                            <items>
+                                                <FXCollections fx:factory="observableArrayList">
+                                                    <String fx:value="Справочник" />
+                                                    <String fx:value="Коллекция" />
+                                                    <String fx:value="Везде" />
+                                                </FXCollections>
+                                            </items>
+                                            <value>
+                                                <String fx:value="Справочник" />
+                                            </value>
+                                        </ChoiceBox>
+                                        <Label text="Страна">
+                                            <font>
+                                                <Font name="System Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <ChoiceBox prefWidth="150.0" />
+                                        <Label layoutX="10.0" layoutY="10.0" text="Тематика">
+                                            <font>
+                                                <Font name="System Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <ChoiceBox layoutX="10.0" layoutY="27.0" prefWidth="150.0" />
+                                        <Label layoutX="10.0" layoutY="77.0" text="Зубцовка">
+                                            <font>
+                                                <Font name="System Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <ChoiceBox layoutX="10.0" layoutY="52.0" prefWidth="150.0" />
+                                        <Label layoutX="10.0" layoutY="94.0" text="Бумага">
+                                            <font>
+                                                <Font name="System Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <ChoiceBox layoutX="10.0" layoutY="111.0" prefWidth="150.0" />
+                                        <HBox>
+                                            <children>
+                                                <CheckBox mnemonicParsing="false" text="Гашение" />
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="TOP_CENTER">
+                                            <children>
+                                                <Button mnemonicParsing="false" text="Поиск" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                    <padding>
+                                        <Insets left="5.0" right="5.0" />
+                                    </padding>
+                                </VBox>
+                                <VBox minWidth="250.0" prefWidth="250.0" spacing="5.0">
+                                </VBox>
+                            </children>
+                        </HBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" />
+                    </items>
+                </SplitPane>
+            </children>
+        </HBox>
     </children>
-</AnchorPane>
+</VBox>
