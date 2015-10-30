@@ -1,0 +1,4 @@
+10-30 17:46:54 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "STOCK" не найдена
+Table "STOCK" not found; SQL statement:
+SELECT t.* FROM PUBLIC.STOCK t [42102-176]
