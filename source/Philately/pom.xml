@@ -38,6 +38,7 @@
     </dependencies>
 
     <build>
+
         <resources>
             <resource>
                 <directory>src/main/resources/</directory>
@@ -49,6 +50,34 @@
 
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <mainClass>com.philately.MainApp</mainClass>
+                    <executable>java</executable>
+                    <includeProjectDependencies>true</includeProjectDependencies>
+                    <includePluginDependencies>true</includePluginDependencies>
+                    <classpathScope>compile</classpathScope>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.7</version>
                 <executions>
@@ -59,6 +88,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
+                            <encoding>UTF-8</encoding>
                             <outputDirectory>${basedir}/target/jfx/app/additionalAppResources</outputDirectory>
                             <resources>
                                 <resource>
@@ -79,7 +109,7 @@
 
                 <configuration>
                     <mainClass>com.philately.MainApp</mainClass>
-                    <bundler>EXE</bundler>
+                    <bundler>msi</bundler>
                     <additionalAppResources>${project.build.directory}/jfx/app/additionalResources</additionalAppResources>
                     <vendor>SSAU</vendor>
                 </configuration>

@@ -1,12 +1,16 @@
 package com.philately.model;
 
+import javax.persistence.*;
+
 /**
  * Created by kirill on 25.10.2015.
  */
+
+@Entity
+@Table(name = "Stock")
 public class Stock implements java.io.Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer stockId;
     private String stockCode;
     private String stockName;
