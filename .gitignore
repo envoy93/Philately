@@ -28,7 +28,7 @@ local.properties
 # PDT-specific
 .buildpath
 
-source\Philately\additionalAppResources
+source/Philately/additionalAppResources
 
 #################
 ## Visual Studio

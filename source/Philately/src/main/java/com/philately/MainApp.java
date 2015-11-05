@@ -1,5 +1,6 @@
 package com.philately;
 
+import com.philately.mark.MarkParamsCache;
 import com.philately.model.Country;
 import com.philately.model.HibernateUtil;
 import com.philately.model.Mark;
@@ -91,7 +92,7 @@ public class MainApp extends Application {
 
             @Override
             protected Boolean call() throws Exception {
-                Thread.sleep(2000l); // just emulates some loading time
+                MarkParamsCache.getInstance(); //init cache
                 return true;
             }
         };
