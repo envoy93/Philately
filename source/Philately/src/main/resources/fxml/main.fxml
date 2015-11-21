@@ -10,8 +10,12 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.collections.*?>
+<?import java.net.URL?>
 
-<VBox fx:controller="com.philately.MainController" id="StackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox id="StackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="599.0" prefWidth="880.0" stylesheets="/fxml/main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.philately.MainController">
+    <!--<stylesheets>
+        <String fx:value="@main.css" />
+    </stylesheets>-->
     <children>
         <MenuBar>
             <menus>
@@ -37,9 +41,6 @@
                 <Button fx:id="saveAs" mnemonicParsing="false" text="Добавить">
                     <graphic>
                         <ImageView fitHeight="0.0" fitWidth="0.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
-                            <!-- <image>
-                                 <Image url="" />
-                             </image>-->
                         </ImageView>
                     </graphic>
                 </Button>
@@ -63,8 +64,15 @@
             <children>
                 <SplitPane fx:id="fileDivider" dividerPositions="0.5" focusTraversable="true" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS">
                     <items>
-                        <HBox prefHeight="100.0" prefWidth="200.0">
-                            <children>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
                                 <VBox minWidth="150.0" prefWidth="150.0" spacing="5.0">
                                     <children>
                                         <Label text="Источник">
@@ -89,7 +97,7 @@
                                                 <Font name="System Bold" size="12.0" />
                                             </font>
                                         </Label>
-                                        <ChoiceBox prefWidth="150.0" fx:id="countryChoiceBox"/>
+                                        <ChoiceBox fx:id="countryChoiceBox" prefWidth="150.0" />
                                         <Label layoutX="10.0" layoutY="10.0" text="Тематика">
                                             <font>
                                                 <Font name="System Bold" size="12.0" />
@@ -119,15 +127,38 @@
                                             </children>
                                         </HBox>
                                     </children>
-                                    <padding>
-                                        <Insets left="5.0" right="5.0" />
-                                    </padding>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
                                 </VBox>
-                                <VBox minWidth="250.0" prefWidth="250.0" spacing="5.0">
-                                </VBox>
-                            </children>
-                        </HBox>
-                  <VBox prefHeight="200.0" prefWidth="100.0" />
+                                <VBox alignment="TOP_CENTER" spacing="5.0" GridPane.columnIndex="1">
+                           <children>
+                              <ListView fx:id="marksListView" VBox.vgrow="ALWAYS" />
+                           </children></VBox>
+                     </children>
+                  </GridPane>
+                  <VBox>
+                     <children>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                            <ColumnConstraints hgrow="SOMETIMES" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints vgrow="SOMETIMES" />
+                            <RowConstraints vgrow="SOMETIMES" />
+                            <RowConstraints vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <ImageView fx:id="markImage" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" />
+                              <Label text="Label" GridPane.rowIndex="1" />
+                              <Label text="Label" GridPane.rowIndex="2" />
+                              <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextArea prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </children></VBox>
                     </items>
                 </SplitPane>
             </children>

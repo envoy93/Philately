@@ -1,0 +1,13 @@
+.cache-list-name {
+    -fx-font-size: 1.2em;
+    -fx-font-weight: bold;
+}
+
+.cache-list-icon {
+    -fx-text-fill: #444444;
+    -fx-effect: dropshadow( three-pass-box, rgba(0,0,0,0.4), 3, 0.0, 1, 1);
+}
+
+.cache-list-found .cache-list-icon {
+    -fx-text-fill: #669900;
+}

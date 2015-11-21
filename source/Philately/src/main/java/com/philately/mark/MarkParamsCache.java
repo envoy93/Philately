@@ -15,7 +15,6 @@ import java.util.List;
 public class MarkParamsCache {
     private HashMap<Integer, Country> countries = new HashMap<>();
 
-
     private static MarkParamsCache instance;
 
     public static synchronized MarkParamsCache getInstance() {
@@ -26,13 +25,12 @@ public class MarkParamsCache {
     }
 
     private MarkParamsCache() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
 
-        for (Country country : (List<Country>) session.createCriteria(Country.class).list()) {
+
+        for (Country country : (List<Country>) HibernateUtil.getSession().createCriteria(Country.class).list()) {
             countries.put(country.getId(), country);
         }
 
-        session.close();
     }
 
     public ArrayList<Country> getCountries(){

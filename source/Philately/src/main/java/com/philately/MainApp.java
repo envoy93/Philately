@@ -1,32 +1,19 @@
 package com.philately;
 
 import com.philately.mark.MarkParamsCache;
-import com.philately.model.Country;
-import com.philately.model.HibernateUtil;
-import com.philately.model.Mark;
-import com.philately.model.Stock;
-import com.sun.javafx.tk.Toolkit;
+import com.sun.javafx.css.StyleManager;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.hibernate.classic.Session;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by kirill on 22.10.2015.
@@ -40,30 +27,32 @@ public class MainApp extends Application {
 
 
     public void showApp() throws Exception {
-        String fxmlFile = "/fxml/hello.fxml";
+       // StyleManager.getInstance().addUserAgentStylesheet(FlatterFX.class.getResource("flatterfx.css").toExternalForm());
+        String fxmlFile = "/fxml/main.fxml";
         FXMLLoader loader = new FXMLLoader();
         Parent root = (Parent) loader.load(getClass().getResourceAsStream(fxmlFile));
         Stage stage = new Stage();
         stage.setTitle("Maven + JavaFX + Hibernate + H2");
         stage.setScene(new Scene(root));
+        ///stage.getScene().getStylesheets().add("/fxml/main.css");
         stage.initStyle(StageStyle.DECORATED);
         stage.centerOnScreen();
         stage.show();
 
-        Session session = HibernateUtil.getSessionFactory().openSession();
+       /* Session session = HibernateUtil.getSessionFactory().openSession();
 
         session.beginTransaction();
-        /*Stock stock = new Stock();
+        Stock stock = new Stock();
 
         stock.setStockCode("4715");
         stock.setStockName("GENM");
 
         session.save(stock);*/
-        Country country = new Country();
+       /* Country country = new Country();
         country.setTitle("123");
         session.save(country);
         session.getTransaction().commit();
-        session.close();
+        session.close();*/
     }
 
 

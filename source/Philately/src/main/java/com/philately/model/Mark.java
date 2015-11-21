@@ -12,6 +12,9 @@ public class Mark {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id")
     private Country country;
 
     public Mark() {
@@ -29,8 +32,7 @@ public class Mark {
         return country;
     }
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+
     public void setCountry(Country country) {
         this.country = country;
     }
