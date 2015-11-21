@@ -38,13 +38,13 @@
         </MenuBar>
         <ToolBar>
             <items>
-                <Button fx:id="saveAs" mnemonicParsing="false" text="Добавить">
+                <Button fx:id="saveAs" mnemonicParsing="false" text="Добавить" onAction="#handleNewMark">
                     <graphic>
                         <ImageView fitHeight="0.0" fitWidth="0.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="profile" mnemonicParsing="false" text="Изменить">
+                <Button fx:id="profile" mnemonicParsing="false" text="Изменить"  onAction="#handleEditMark">
                     <graphic>
                         <ImageView fitHeight="0.0" fitWidth="0.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                             <!--<image>
@@ -53,7 +53,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-            <Button fx:id="saveAs1" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Удалить">
+            <Button fx:id="saveAs1" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Удалить" onAction="#handleDeleteMark">
                <graphic>
                   <ImageView fitHeight="0.0" fitWidth="0.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" />
                </graphic>

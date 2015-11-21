@@ -10,18 +10,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -39,6 +45,9 @@ public class MainController {
 
     @FXML
     ImageView markImage;
+
+    // Reference to the main application.
+    private MainApp mainApp;
 
     //after fxml has been loaded
     @FXML
@@ -83,11 +92,58 @@ public class MainController {
         marksListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                //TODO add information about mark
                 markImage.setImage(new Image(Utility.getInstance().getFullPathToImage(null)));
             }
         });
 
 
+    }
+
+    public void setMainApp(MainApp mainApp) {
+        this.mainApp = mainApp;
+    }
+
+
+    @FXML
+    private void handleNewMark() {
+        Mark tempMark = new Mark();
+        boolean okClicked = mainApp.showMarkEditDialog(tempMark);
+        if (okClicked) {
+            //@TODO create mark
+        }
+    }
+
+    /**
+     * Called when the user clicks the edit button. Opens a dialog to edit
+     * details for the selected person.
+     */
+    @FXML
+    private void handleEditMark() {
+
+        Mark selectedMark = (Mark) marksListView.getSelectionModel().getSelectedItem();
+        if (selectedMark != null) {
+            boolean okClicked = mainApp.showMarkEditDialog(selectedMark);
+            if (okClicked) {
+                //TODO save edit mark
+            }
+
+        } else {
+            // Nothing selected.
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.initOwner(mainApp.getPrimaryStage());
+            alert.setTitle("No Selection");
+            alert.setHeaderText("No Mark Selected");
+            alert.setContentText("Please select a mark in the table.");
+
+            alert.showAndWait();
+        }
+    }
+
+    @FXML
+    private void handleDeleteMark() {
+        Mark selectedMark = (Mark) marksListView.getSelectionModel().getSelectedItem();
+        //TODO question + delete
     }
 
     class CountryClassConverter extends StringConverter<Country> {
