@@ -10,19 +10,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
@@ -55,6 +46,8 @@ public class MainController {
         countryChoiceBox.setItems(FXCollections.observableList(MarkParamsCache.getInstance().getCountries()));
         countryChoiceBox.getSelectionModel().selectFirst();
         countryChoiceBox.setConverter(new CountryClassConverter());
+
+
         ObservableList list = FXCollections.observableList(MarksFilter.getMarks());
         list.addAll(MarksFilter.getMarks());
         list.addAll(MarksFilter.getMarks());
