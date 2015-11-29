@@ -13,9 +13,13 @@ public class Mark {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id")
     private Country country;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id")
+    private Color color;
 
     public Mark() {
     }
@@ -32,8 +36,15 @@ public class Mark {
         return country;
     }
 
-
     public void setCountry(Country country) {
         this.country = country;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

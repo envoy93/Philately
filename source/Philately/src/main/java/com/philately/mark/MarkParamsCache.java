@@ -1,5 +1,6 @@
 package com.philately.mark;
 
+import com.philately.model.Color;
 import com.philately.model.Country;
 import com.philately.model.HibernateUtil;
 import com.sun.org.apache.bcel.internal.generic.ALOAD;
@@ -14,6 +15,7 @@ import java.util.List;
  */
 public class MarkParamsCache {
     private HashMap<Integer, Country> countries = new HashMap<>();
+    private HashMap<Integer, Color> colors = new HashMap<>();
 
     private static MarkParamsCache instance;
 
@@ -31,7 +33,9 @@ public class MarkParamsCache {
             countries.put(country.getId(), country);
         }
 
-
+        for (Color color : (List<Color>) HibernateUtil.getSession().createCriteria(Color.class).list()) {
+            colors.put(color.getId(), color);
+        }
     }
 
     public ArrayList<Country> getCountries(){
@@ -40,5 +44,13 @@ public class MarkParamsCache {
 
     public Country getCountry(Integer key){
         return countries.get(key);
+    }
+
+    public ArrayList<Color> getColors(){
+        return new ArrayList(colors.values());
+    }
+
+    public Color getColor(Integer key){
+        return colors.get(key);
     }
 }

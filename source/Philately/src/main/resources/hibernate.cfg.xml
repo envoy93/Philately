@@ -18,6 +18,7 @@
      <!--   <mapping resource="com/philately/mapping/Stock.hbm.xml"></mapping>-->
 
         <mapping class="com.philately.model.Country"/>
+        <mapping class="com.philately.model.Color"/>
         <mapping class="com.philately.model.Mark"/>
     </session-factory>
 </hibernate-configuration>
