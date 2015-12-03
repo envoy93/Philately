@@ -3,6 +3,7 @@ package com.philately.mark;
 import com.philately.model.Color;
 import com.philately.model.Country;
 import com.philately.model.HibernateUtil;
+import com.philately.model.Paper;
 import com.sun.org.apache.bcel.internal.generic.ALOAD;
 import org.hibernate.classic.Session;
 
@@ -14,8 +15,9 @@ import java.util.List;
  * Created by kirill on 05.11.2015.
  */
 public class MarkParamsCache {
-    private HashMap<Integer, Country> countries = new HashMap<>();
-    private HashMap<Integer, Color> colors = new HashMap<>();
+    private HashMap<String, Country> countries = new HashMap<>();
+    private HashMap<String, Color> colors = new HashMap<>();
+    private HashMap<String, Paper> papers = new HashMap<>();
 
     private static MarkParamsCache instance;
 
@@ -30,11 +32,15 @@ public class MarkParamsCache {
 
 
         for (Country country : (List<Country>) HibernateUtil.getSession().createCriteria(Country.class).list()) {
-            countries.put(country.getId(), country);
+            countries.put(country.getTitle(), country);
         }
 
         for (Color color : (List<Color>) HibernateUtil.getSession().createCriteria(Color.class).list()) {
-            colors.put(color.getId(), color);
+            colors.put(color.getTitle(), color);
+        }
+
+        for (Paper paper : (List<Paper>) HibernateUtil.getSession().createCriteria(Paper.class).list()) {
+            papers.put(paper.getTitle(), paper);
         }
     }
 
@@ -42,7 +48,7 @@ public class MarkParamsCache {
         return new ArrayList(countries.values());
     }
 
-    public Country getCountry(Integer key){
+    public Country getCountry(String key){
         return countries.get(key);
     }
 
@@ -50,7 +56,15 @@ public class MarkParamsCache {
         return new ArrayList(colors.values());
     }
 
-    public Color getColor(Integer key){
+    public Color getColor(String key){
         return colors.get(key);
+    }
+
+    public ArrayList<Paper> getPapers(){
+        return new ArrayList(papers.values());
+    }
+
+    public Paper getPaper(String key){
+        return papers.get(key);
     }
 }

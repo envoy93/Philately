@@ -133,11 +133,14 @@ public class MainApp extends Application {
         }
         // Create the dialog Stage.
         Stage dialogStage = new Stage();
+
         dialogStage.setTitle("Редактировать марку");
         dialogStage.initModality(Modality.WINDOW_MODAL);
         dialogStage.initOwner(primaryStage);
         Scene scene = new Scene(page);
         dialogStage.setScene(scene);
+        dialogStage.setResizable(false);
+
 
         // Set the person into the controller.
         EditFormController controller = loader.getController();

@@ -20,5 +20,7 @@
         <mapping class="com.philately.model.Country"/>
         <mapping class="com.philately.model.Color"/>
         <mapping class="com.philately.model.Mark"/>
+        <mapping class="com.philately.model.Paper"/>
+        <mapping class="com.philately.model.Collection"/>
     </session-factory>
 </hibernate-configuration>

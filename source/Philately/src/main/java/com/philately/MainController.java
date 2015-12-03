@@ -6,7 +6,12 @@ import com.philately.model.Country;
 import com.philately.model.HibernateUtil;
 import com.philately.model.Mark;
 import com.philately.view.MarkListCell;
+import com.philately.view.converters.ColorClassConverter;
+import com.philately.view.converters.CountryClassConverter;
+import com.philately.view.converters.PaperClassConverter;
+import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -14,14 +19,18 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import org.hibernate.classic.Session;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.*;
 
 /**
  * Created by kirill on 22.10.2015.
@@ -30,6 +39,10 @@ public class MainController {
 
     @FXML
     ChoiceBox countryChoiceBox;
+    @FXML
+    ChoiceBox colorChoiceBox;
+    @FXML
+    ChoiceBox paperChoiceBox;
 
     @FXML
     ListView marksListView;
@@ -37,32 +50,34 @@ public class MainController {
     @FXML
     ImageView markImage;
 
+    @FXML
+    ToolBar markToolbar;
+
+    @FXML
+    VBox markVBoxPanel;
+
+
     // Reference to the main application.
     private MainApp mainApp;
 
     //after fxml has been loaded
     @FXML
     private void initialize() {
+        setMark(null);
         countryChoiceBox.setItems(FXCollections.observableList(MarkParamsCache.getInstance().getCountries()));
         countryChoiceBox.getSelectionModel().selectFirst();
         countryChoiceBox.setConverter(new CountryClassConverter());
 
+        colorChoiceBox.setItems(FXCollections.observableList(MarkParamsCache.getInstance().getColors()));
+        colorChoiceBox.getSelectionModel().selectFirst();
+        colorChoiceBox.setConverter(new ColorClassConverter());
+
+        paperChoiceBox.setItems(FXCollections.observableList(MarkParamsCache.getInstance().getPapers()));
+        paperChoiceBox.getSelectionModel().selectFirst();
+        paperChoiceBox.setConverter(new PaperClassConverter());
+
 
         ObservableList list = FXCollections.observableList(MarksFilter.getMarks());
-        list.addAll(MarksFilter.getMarks());
-        list.addAll(MarksFilter.getMarks());
-        list.addAll(MarksFilter.getMarks());
-        list.addAll(MarksFilter.getMarks());
-        list.addAll(MarksFilter.getMarks());
-        list.addAll(MarksFilter.getMarks());
-        list.addAll(MarksFilter.getMarks());
-        list.addAll(MarksFilter.getMarks());
-        list.addAll(MarksFilter.getMarks());
-        list.addAll(MarksFilter.getMarks());
-        list.addAll(MarksFilter.getMarks());
-        list.addAll(MarksFilter.getMarks());
-        list.addAll(MarksFilter.getMarks());
-
         marksListView.setItems(list);
         marksListView.setCellFactory(new Callback<ListView, ListCell>() {
             @Override
@@ -85,8 +100,7 @@ public class MainController {
         marksListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                //TODO add information about mark
-                markImage.setImage(new Image(Utility.getInstance().getFullPathToImage(null)));
+                setMark((Mark) marksListView.getSelectionModel().getSelectedItem());
             }
         });
 
@@ -100,10 +114,11 @@ public class MainController {
 
     @FXML
     private void handleNewMark() {
-        Mark tempMark = new Mark();
-        boolean okClicked = mainApp.showMarkEditDialog(tempMark);
+        boolean okClicked = mainApp.showMarkEditDialog(null);
         if (okClicked) {
-            //@TODO create mark
+            //@TODO research
+            ObservableList list = FXCollections.observableList(MarksFilter.getMarks());
+            marksListView.setItems(list);
         }
     }
 
@@ -118,7 +133,10 @@ public class MainController {
         if (selectedMark != null) {
             boolean okClicked = mainApp.showMarkEditDialog(selectedMark);
             if (okClicked) {
-                //TODO save edit mark
+                //TODO update viewed mark
+                ObservableList list = FXCollections.observableList(MarksFilter.getMarks());
+                marksListView.setItems(list);
+                setMark(selectedMark);
             }
 
         } else {
@@ -136,19 +154,67 @@ public class MainController {
     @FXML
     private void handleDeleteMark() {
         Mark selectedMark = (Mark) marksListView.getSelectionModel().getSelectedItem();
-        //TODO question + delete
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Удалить марку из справочника?", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.YES) {
+
+            Session session = HibernateUtil.getSession();
+            session.beginTransaction();
+            session.delete(selectedMark);
+            session.getTransaction().commit();
+            //TODO hide view + research
+            ObservableList list = FXCollections.observableList(MarksFilter.getMarks());
+            marksListView.setItems(list);
+            setMark(null);
+        }
     }
 
-    class CountryClassConverter extends StringConverter<Country> {
+    @FXML
+    private Label countryField;
+    @FXML
+    private Label yearField;
+    @FXML
+    private Label cancellationField;
+    @FXML
+    private Label themeField;
+    @FXML
+    private Label seriesField;
+    @FXML
+    private Label priceField;
+    @FXML
+    private Label editionField;
+    @FXML
+    private Label separationField;
+    @FXML
+    private Label paperField;
+    @FXML
+    private Label sizeField;
+    @FXML
+    private Label colorField;
 
-        @Override
-        public String toString(Country myClassinstance) {
-            return myClassinstance.getTitle();
-        }
+    private void setMark(Mark mark){
+        if (mark == null) { //hide
+            markToolbar.setVisible(false);
+            markVBoxPanel.setVisible(false);
+        } else {
+            markToolbar.setVisible(true);
+            markVBoxPanel.setVisible(true);
+            //TODO image
+            markImage.setImage(new Image(Utility.getInstance().getFullPathToImage(null)));
+            countryField.setText(mark.getCountry().getTitle());
+            yearField.setText(String.valueOf(mark.getYear()));
+            cancellationField.setText(mark.isCancellation()? "Да": "Нет");
+            themeField.setText(mark.getTheme());
+            seriesField.setText(mark.getSeries());
+            priceField.setText(mark.getPrice());
+            editionField.setText(String.valueOf(mark.getEdition()));
+            separationField.setText(mark.getSeparation());
+            paperField.setText(mark.getPaper().getTitle());
+            sizeField.setText(mark.getSize());
+            colorField.setText(mark.getColor().getTitle());
 
-        @Override
-        public Country fromString(String string) {
-            return null;
+
         }
     }
 }

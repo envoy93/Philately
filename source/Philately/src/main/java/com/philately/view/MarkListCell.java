@@ -73,7 +73,7 @@ public class MarkListCell extends ListCell<Mark> {
         setText(null);
         //icon.setText(GeocachingIcons.getIcon(mark).toString());
         name.setText("Марка №" + mark.getId());
-        dt.setText(mark.getCountry().getTitle());
+        dt.setText(mark.getCountry().getTitle() + ", " + mark.getYear() + "г.");
         //image.setImage(new Image("file:/additionalAppResources/default.png"));
         image.setImage(new Image(Utility.getInstance().getFullPathToImage(null)));
         // setStyleClassDependingOnFoundState(mark);
