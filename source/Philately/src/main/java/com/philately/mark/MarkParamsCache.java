@@ -1,9 +1,6 @@
 package com.philately.mark;
 
-import com.philately.model.Color;
-import com.philately.model.Country;
-import com.philately.model.HibernateUtil;
-import com.philately.model.Paper;
+import com.philately.model.*;
 import com.sun.org.apache.bcel.internal.generic.ALOAD;
 import org.hibernate.classic.Session;
 
@@ -18,6 +15,7 @@ public class MarkParamsCache {
     private HashMap<String, Country> countries = new HashMap<>();
     private HashMap<String, Color> colors = new HashMap<>();
     private HashMap<String, Paper> papers = new HashMap<>();
+    private HashMap<String, Currency> currency = new HashMap<>();
 
     private static MarkParamsCache instance;
 
@@ -41,6 +39,10 @@ public class MarkParamsCache {
 
         for (Paper paper : (List<Paper>) HibernateUtil.getSession().createCriteria(Paper.class).list()) {
             papers.put(paper.getTitle(), paper);
+        }
+
+        for (Currency c : (List<Currency>) HibernateUtil.getSession().createCriteria(Currency.class).list()) {
+            currency.put(c.getTitle(), c);
         }
     }
 
@@ -66,5 +68,13 @@ public class MarkParamsCache {
 
     public Paper getPaper(String key){
         return papers.get(key);
+    }
+
+    public ArrayList<Paper> getCurrency(){
+        return new ArrayList(currency.values());
+    }
+
+    public Currency getCurrency(String key){
+        return currency.get(key);
     }
 }

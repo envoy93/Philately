@@ -1,14 +1,19 @@
 package com.philately;
 
 import com.philately.mark.MarkParamsCache;
+import com.philately.model.HibernateUtil;
 import com.philately.model.Mark;
 import com.sun.javafx.css.StyleManager;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -17,6 +22,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 
@@ -45,6 +51,12 @@ public class MainApp extends Application {
         ///stage.getScene().getStylesheets().add("/fxml/main.css");
         primaryStage.initStyle(StageStyle.DECORATED);
         primaryStage.centerOnScreen();
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                shutdown();
+            }
+        });
         primaryStage.show();
 
        /* Session session = HibernateUtil.getSessionFactory().openSession();
@@ -152,6 +164,19 @@ public class MainApp extends Application {
 
         return controller.isOkClicked();
 
+    }
+
+    public void shutdown() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Выйти из приложения?", ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Выход");
+        alert.setHeaderText("Вы уверены?");
+        alert.initOwner(primaryStage);
+        alert.showAndWait();
+
+        if (alert.getResult() == ButtonType.YES) {
+            HibernateUtil.shutdown();
+            Platform.exit();
+        }
     }
 
     public Stage getPrimaryStage() {

@@ -22,5 +22,6 @@
         <mapping class="com.philately.model.Mark"/>
         <mapping class="com.philately.model.Paper"/>
         <mapping class="com.philately.model.Collection"/>
+        <mapping class="com.philately.model.Currency"/>
     </session-factory>
 </hibernate-configuration>

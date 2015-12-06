@@ -75,7 +75,9 @@ public class MarkListCell extends ListCell<Mark> {
         name.setText("Марка №" + mark.getId());
         dt.setText(mark.getCountry().getTitle() + ", " + mark.getYear() + "г.");
         //image.setImage(new Image("file:/additionalAppResources/default.png"));
-        image.setImage(new Image(Utility.getInstance().getFullPathToImage(null)));
+        image.setFitHeight(64);
+        image.setFitWidth(64);
+        image.setImage(mark.getImage());
         // setStyleClassDependingOnFoundState(mark);
         setGraphic(grid);
     }

@@ -37,8 +37,15 @@ public class Utility {
 
     public String getFullPathToImage(String image) {
         if (image == null) {
-            image = "default.png";
+            image = "default";
         }
-        return "file:" + getAppPath() + "\\additionalAppResources\\" + image;
+        return "file:" + getAppPath() + "\\additionalAppResources\\" + image + ".jpg";
+    }
+
+    public File getFileImage(String name){
+        if (name == null) {
+            name = "default";
+        }
+        return new File(getAppPath() + "\\additionalAppResources\\" + name + ".jpg");
     }
 }

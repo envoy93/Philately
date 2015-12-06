@@ -2,16 +2,32 @@ package com.philately;
 
 import com.philately.mark.MarkParamsCache;
 import com.philately.model.*;
+import com.philately.model.Color;
+import com.philately.view.DoubleTextField;
+import com.philately.view.IntegerTextField;
 import com.philately.view.converters.ColorClassConverter;
 import com.philately.view.converters.CountryClassConverter;
+import com.philately.view.converters.CurrencyClassConverter;
 import com.philately.view.converters.PaperClassConverter;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.hibernate.classic.Session;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Calendar;
 
 
 /**
@@ -26,7 +42,7 @@ public class EditFormController {
     @FXML
     private ChoiceBox countryField;
     @FXML
-    private TextField yearField;
+    private IntegerTextField yearField;
     @FXML
     private CheckBox cancellationField;
     @FXML
@@ -34,9 +50,9 @@ public class EditFormController {
     @FXML
     private TextField seriesField;
     @FXML
-    private TextField priceField;
+    private DoubleTextField priceField;
     @FXML
-    private TextField editionField;
+    private IntegerTextField editionField;
     @FXML
     private TextField separationField;
     @FXML
@@ -45,6 +61,13 @@ public class EditFormController {
     private TextField sizeField;
     @FXML
     private ChoiceBox colorField;
+    @FXML
+    private ChoiceBox currencyField;
+    @FXML
+    private ImageView imageField;
+    @FXML
+    private Button imageButton;
+    private File imageFile;
 
     @FXML
     private void initialize() {
@@ -60,9 +83,16 @@ public class EditFormController {
         paperField.getSelectionModel().selectFirst();
         paperField.setConverter(new PaperClassConverter());
 
-        editionField.lengthProperty().addListener(new NumberChangedListener(editionField));
+        currencyField.setItems(FXCollections.observableList(MarkParamsCache.getInstance().getCurrency()));
+        currencyField.getSelectionModel().selectFirst();
+        currencyField.setConverter(new CurrencyClassConverter());
 
-        yearField.lengthProperty().addListener(new YearChangedListener(yearField));
+        imageFile = null;
+        imageField.setFitHeight(128);
+        imageField.setFitWidth(128);
+        /*editionField.lengthProperty().addListener(new NumberChangedListener(editionField));
+
+        yearField.lengthProperty().addListener(new YearChangedListener(yearField));*/
     }
 
     /**
@@ -81,19 +111,24 @@ public class EditFormController {
             countryField.getSelectionModel().selectFirst();
             colorField.getSelectionModel().selectFirst();
             paperField.getSelectionModel().selectFirst();
+            currencyField.getSelectionModel().selectFirst();
+            imageField.setImage(new Image(Utility.getInstance().getFullPathToImage(null)));
         } else {
             countryField.getSelectionModel().select(mark.getCountry());
             paperField.getSelectionModel().select(mark.getPaper());
             colorField.getSelectionModel().select(mark.getColor());
+            currencyField.getSelectionModel().select(mark.getCurrency());
             yearField.setText(String.valueOf(mark.getYear()));
             cancellationField.setSelected(mark.isCancellation());
             themeField.setText(mark.getTheme());
             seriesField.setText(mark.getSeries());
-            priceField.setText(mark.getPrice());
+            priceField.setText(String.valueOf(mark.getPrice()));
             editionField.setText(String.valueOf(mark.getEdition()));
             separationField.setText(mark.getSeparation());
             sizeField.setText(mark.getSize());
+            imageField.setImage(mark.getImage());
         }
+        imageFile = null;
     }
 
     /**
@@ -103,6 +138,19 @@ public class EditFormController {
      */
     public boolean isOkClicked() {
         return okClicked;
+    }
+
+
+    @FXML
+    private void handleImageChoose() {
+        final FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Изображение (.png , .jpg, .gif)", "*.png", "*.jpg", "*.gif"));
+        fileChooser.setTitle("Выбрать фотографию");
+        File file = fileChooser.showOpenDialog(dialogStage);
+        if (file != null) {
+            imageFile = file;
+            imageField.setImage(new Image(file.toURI().toString()));
+        }
     }
 
     /**
@@ -118,15 +166,20 @@ public class EditFormController {
             mark.setCountry((Country) countryField.getSelectionModel().getSelectedItem());
             mark.setPaper((Paper) paperField.getSelectionModel().getSelectedItem());
             mark.setColor((Color) colorField.getSelectionModel().getSelectedItem());
+            mark.setCurrency((Currency) currencyField.getSelectionModel().getSelectedItem());
             mark.setYear(Integer.parseInt(yearField.getText()));
             mark.setCancellation(cancellationField.isSelected());
             mark.setTheme(themeField.getText());
             mark.setSeries(seriesField.getText());
-            mark.setPrice(priceField.getText());
-            mark.setEdition(Integer.parseInt(editionField.getText())); //TODO
+            mark.setPrice(priceField.getDouble());
+            mark.setEdition(editionField.getInt());
             mark.setSeparation(separationField.getText());
             mark.setSize(sizeField.getText());
 
+            //TODO create mark file if imageFile != null
+            if (imageFile != null) {
+                copyAndResizeImage();
+            }
             Session session = HibernateUtil.getSession();
 
             session.beginTransaction();
@@ -135,6 +188,30 @@ public class EditFormController {
 
             okClicked = true;
             dialogStage.close();
+        }
+    }
+
+    private void copyAndResizeImage() {
+        int width = 128, height = 128;
+        BufferedImage inputImage = null;
+        try {
+            inputImage = ImageIO.read(imageFile);
+
+            BufferedImage outputImage = new BufferedImage(width, height,
+                    BufferedImage.TYPE_INT_RGB);
+            Graphics2D g = outputImage.createGraphics();
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                    RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            g.clearRect(0, 0, width, height);
+            g.drawImage(inputImage, 0, 0, width, height, null);
+            g.dispose();
+            File file = Utility.getInstance().getFileImage(mark.getId().toString());
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            ImageIO.write(outputImage, "jpg", file);//new File(Utility.getInstance().getFullPathToImage(mark.getId().toString())));
+        } catch (IOException e) {
+            return; //TODO mb error?
         }
     }
 
@@ -157,6 +234,8 @@ public class EditFormController {
 
         if (yearField.getText().length() == 0) {
             errorMessage += "Не введен год выпуска\n";
+        } else if ((yearField.getInt() < 1653) || (yearField.getInt() > Calendar.getInstance().get(Calendar.YEAR))) {
+            errorMessage += "Год выпуска должен быть в пределах от 1653 до " + Calendar.getInstance().get(Calendar.YEAR) + "\n";
         }
         if (themeField.getText().length() == 0) {
             errorMessage += "Не введена тематика\n";
@@ -169,10 +248,14 @@ public class EditFormController {
 
         if (priceField.getText().length() == 0) {
             errorMessage += "Не введен номинал\n";
+        } else if ((priceField.getDouble() <= 0)) {
+            errorMessage += "Номинал должен быть больше нуля\n";
         }
 
         if (editionField.getText().length() == 0) {
             errorMessage += "Не введен тираж\n";
+        } else if ((editionField.getInt() < 1) || (editionField.getInt() > 100000000)) {
+            errorMessage += "Тираж должен быть в пределах от 1 до 100 000 000\n";
         }
 
         if (separationField.getText().length() == 0) {
@@ -206,7 +289,7 @@ public class EditFormController {
 
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-            super.changed(observable,oldValue,newValue);
+            super.changed(observable, oldValue, newValue);
 
             if (getTextField().getText().length() > 4) {
                 getTextField().setText(getTextField().getText().substring(0, getTextField().getText().length() - 1));

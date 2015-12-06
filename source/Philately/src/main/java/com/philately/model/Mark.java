@@ -1,6 +1,10 @@
 package com.philately.model;
 
+import com.philately.Utility;
+import javafx.scene.image.Image;
+
 import javax.persistence.*;
+import java.io.File;
 
 /**
  * Created by kirill on 04.11.2015.
@@ -25,6 +29,10 @@ public class Mark {
     @JoinColumn(name = "paper", referencedColumnName = "id")
     private Paper paper;
 
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "currency", referencedColumnName = "id")
+    private Currency currency;
+
     private int year;
 
     private boolean cancellation;
@@ -39,7 +47,7 @@ public class Mark {
 
     private String size;
 
-    private String price;
+    private Double price;
 
     public Mark() {
     }
@@ -132,11 +140,27 @@ public class Mark {
         this.year = year;
     }
 
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(double price) {
         this.price = price;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
+    public Image getImage() {
+        if (Utility.getInstance().getFileImage(String.valueOf(getId())).exists()) {
+            return new Image(Utility.getInstance().getFullPathToImage(String.valueOf(getId())));
+        } else {
+            return new Image(Utility.getInstance().getFullPathToImage(null));
+        }
     }
 }
