@@ -6,6 +6,8 @@ import com.philately.model.Mark;
 import com.sun.javafx.css.StyleManager;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -46,15 +48,32 @@ public class MainApp extends Application {
         Parent root = (Parent) loader.load(getClass().getResourceAsStream(fxmlFile));
         ((MainController) loader.getController()).setMainApp(this);
         primaryStage = new Stage();
-        primaryStage.setTitle("Maven + JavaFX + Hibernate + H2");
+        primaryStage.setTitle("Учет почтовых марок");
         primaryStage.setScene(new Scene(root));
+        primaryStage.getScene().widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                ((MainController) loader.getController()).widthResize();
+            }
+        });
+
+        primaryStage.getScene().heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                ((MainController) loader.getController()).heightResize();
+            }
+        });
         ///stage.getScene().getStylesheets().add("/fxml/main.css");
         primaryStage.initStyle(StageStyle.DECORATED);
+        primaryStage.setMinHeight(600);
+        primaryStage.setMinWidth(800);
         primaryStage.centerOnScreen();
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
+                event.consume();
                 shutdown();
+
             }
         });
         primaryStage.show();

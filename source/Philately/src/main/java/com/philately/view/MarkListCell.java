@@ -26,6 +26,8 @@ public class MarkListCell extends ListCell<Mark> {
     private ImageView image = new ImageView("file:/additionalAppResources/default10.png");
     private Label name = new Label();
     private Label dt = new Label();
+    private Label price = new Label();
+    private Label info = new Label();
 
     public MarkListCell() {
         configureGrid();
@@ -49,9 +51,11 @@ public class MarkListCell extends ListCell<Mark> {
     }
 
     private void addControlsToGrid() {
-        grid.add(image,0, 0, 1, 2);
+        grid.add(image, 0, 0, 1, 4);
         grid.add(name, 1, 0);
-        grid.add(dt,   1, 1);
+        grid.add(price, 1, 1);
+        grid.add(dt, 1, 2);
+        grid.add(info, 1, 3);
     }
 
     @Override
@@ -72,8 +76,15 @@ public class MarkListCell extends ListCell<Mark> {
     private void addContent(Mark mark) {
         setText(null);
         //icon.setText(GeocachingIcons.getIcon(mark).toString());
-        name.setText("Марка №" + mark.getId());
+        name.setText(mark.getTheme());
+        name.setWrapText(true);
+        price.setText(mark.getPrice() + mark.getCurrency().getTitle() + ", " + mark.getEdition() + "шт. в тираже");
+        price.setWrapText(true);
         dt.setText(mark.getCountry().getTitle() + ", " + mark.getYear() + "г.");
+        dt.setWrapText(true);
+        info.setText("Серия: " + mark.getSeries() + ", бумага: " + mark.getPaper().getTitle() + ", размеры: " + mark.getSize());
+        info.setWrapText(true);
+
         //image.setImage(new Image("file:/additionalAppResources/default.png"));
         image.setFitHeight(64);
         image.setFitWidth(64);

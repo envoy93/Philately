@@ -7,18 +7,22 @@ import com.philately.model.Currency;
 import com.philately.view.DoubleTextField;
 import com.philately.view.IntegerTextField;
 import com.philately.view.MarkListCell;
+import com.philately.view.Property;
 import com.philately.view.converters.ColorClassConverter;
 import com.philately.view.converters.CountryClassConverter;
 import com.philately.view.converters.CurrencyClassConverter;
 import com.philately.view.converters.PaperClassConverter;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -76,7 +80,8 @@ public class MainController {
 
     @FXML
     private ToolBar markToolbar;
-
+    @FXML
+    private VBox marksListVBox;
     @FXML
     private VBox markVBoxPanel;
 
@@ -137,12 +142,49 @@ public class MainController {
             }
         });
 
+        marksListVBox.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                widthResize();
+            }
+        });
+
+        marksListVBox.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                heightResize();
+            }
+        });
+
+        nameColumn.setCellValueFactory(new PropertyValueFactory<Property, String>("name"));
+        valueColumn.setCellValueFactory(new PropertyValueFactory<Property, String>("value"));
+
+        paramsData.add(new Property("Страна", ""));
+        paramsData.add(new Property("Год выпуска", ""));
+        paramsData.add(new Property("Гашение", ""));
+        paramsData.add(new Property("Тема", ""));
+        paramsData.add(new Property("Серия", ""));
+        paramsData.add(new Property("Номинал", ""));
+        paramsData.add(new Property("Тираж", ""));
+        paramsData.add(new Property("Зубцовка", ""));
+        paramsData.add(new Property("Бумага", ""));
+        paramsData.add(new Property("Размер", ""));
+        paramsData.add(new Property("Цвет", ""));
+
+        markViewTable.setItems(paramsData);
 
     }
 
+    public void widthResize() {
+        marksListView.setPrefWidth(marksListVBox.getWidth());
+    }
+
+    public void heightResize() {
+        marksListView.setPrefHeight(marksListVBox.getHeight());
+    }
 
 
-    private List getArrayWithDefaultElement(Object elem, List list){
+    private List getArrayWithDefaultElement(Object elem, List list) {
         List items = new ArrayList<>();
         items.add(elem);
         items.addAll(list);
@@ -211,9 +253,9 @@ public class MainController {
     }
 
     @FXML
-    private void handleSearch(){
+    private void handleSearch() {
         Criteria criteria = HibernateUtil.getSession().createCriteria(Mark.class);
-        if ( ((Country) countryFieldSearch.getSelectionModel().getSelectedItem()).getId() >= 0) {
+        if (((Country) countryFieldSearch.getSelectionModel().getSelectedItem()).getId() >= 0) {
             criteria = criteria.add(Restrictions.eq("country", countryFieldSearch.getSelectionModel().getSelectedItem()));
         }
 
@@ -221,7 +263,7 @@ public class MainController {
             criteria = criteria.add(Restrictions.eq("year", yearFieldSearch.getInt()));
         }
 
-        if ( cancellationFieldSearch.getSelectionModel().getSelectedIndex() > 0) {
+        if (cancellationFieldSearch.getSelectionModel().getSelectedIndex() > 0) {
             criteria = criteria.add(Restrictions.eq("cancellation", (cancellationFieldSearch.getSelectionModel().getSelectedIndex()) == 1));
         }
 
@@ -245,7 +287,7 @@ public class MainController {
             criteria = criteria.add(Restrictions.eq("separation", separationFieldSearch.getText()));
         }
 
-        if ( ((Paper) paperFieldSearch.getSelectionModel().getSelectedItem()).getId() >= 0) {
+        if (((Paper) paperFieldSearch.getSelectionModel().getSelectedItem()).getId() >= 0) {
             criteria = criteria.add(Restrictions.eq("paper", paperFieldSearch.getSelectionModel().getSelectedItem()));
         }
 
@@ -253,11 +295,11 @@ public class MainController {
             criteria = criteria.add(Restrictions.eq("size", sizeFieldSearch.getText()));
         }
 
-        if ( ((Color) colorFieldSearch.getSelectionModel().getSelectedItem()).getId() >= 0) {
+        if (((Color) colorFieldSearch.getSelectionModel().getSelectedItem()).getId() >= 0) {
             criteria = criteria.add(Restrictions.eq("color", colorFieldSearch.getSelectionModel().getSelectedItem()));
         }
 
-        if ( ((Currency) currencyFieldSearch.getSelectionModel().getSelectedItem()).getId() >= 0) {
+        if (((Currency) currencyFieldSearch.getSelectionModel().getSelectedItem()).getId() >= 0) {
             criteria = criteria.add(Restrictions.eq("currency", currencyFieldSearch.getSelectionModel().getSelectedItem()));
         }
 
@@ -267,27 +309,12 @@ public class MainController {
     }
 
     @FXML
-    private Label countryField;
+    private TableView markViewTable;
     @FXML
-    private Label yearField;
+    private TableColumn<Property, String> nameColumn;
     @FXML
-    private Label cancellationField;
-    @FXML
-    private Label themeField;
-    @FXML
-    private Label seriesField;
-    @FXML
-    private Label priceField;
-    @FXML
-    private Label editionField;
-    @FXML
-    private Label separationField;
-    @FXML
-    private Label paperField;
-    @FXML
-    private Label sizeField;
-    @FXML
-    private Label colorField;
+    private TableColumn<Property, String> valueColumn;
+    private ObservableList<Property> paramsData = FXCollections.observableArrayList();
 
     private void setMark(Mark mark) {
         if (mark == null) { //hide
@@ -298,19 +325,18 @@ public class MainController {
             markVBoxPanel.setVisible(true);
             //TODO image
             markImage.setImage(mark.getImage());
-            countryField.setText(mark.getCountry().getTitle());
-            yearField.setText(String.valueOf(mark.getYear()));
-            cancellationField.setText(mark.isCancellation() ? "Да" : "Нет");
-            themeField.setText(mark.getTheme());
-            seriesField.setText(mark.getSeries());
-            priceField.setText(mark.getPrice() + " " + mark.getCurrency().getTitle());
-            editionField.setText(String.valueOf(mark.getEdition()));
-            separationField.setText(mark.getSeparation());
-            paperField.setText(mark.getPaper().getTitle());
-            sizeField.setText(mark.getSize());
-            colorField.setText(mark.getColor().getTitle());
-
-
+            paramsData.get(0).setValue(mark.getCountry().getTitle());
+            paramsData.get(1).setValue(String.valueOf(mark.getYear()));
+            paramsData.get(2).setValue(mark.isCancellation() ? "Да" : "Нет");
+            paramsData.get(3).setValue(mark.getTheme());
+            paramsData.get(4).setValue(mark.getSeries());
+            paramsData.get(5).setValue(mark.getPrice() + " " + mark.getCurrency().getTitle());
+            paramsData.get(6).setValue(String.valueOf(mark.getEdition()));
+            paramsData.get(7).setValue(mark.getSeparation());
+            paramsData.get(8).setValue(mark.getPaper().getTitle());
+            paramsData.get(9).setValue(mark.getSize());
+            paramsData.get(10).setValue(mark.getColor().getTitle());
+            markViewTable.refresh();
         }
     }
 }
