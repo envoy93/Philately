@@ -35,6 +35,24 @@
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
         </dependency>
+        <!-- rtf -->
+        <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext-rtf</artifactId>
+            <version>2.1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+            <version>2.1.7</version>
+        </dependency>
+        <!-- xls -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.13</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -116,7 +134,8 @@
                 <configuration>
                     <mainClass>com.philately.MainApp</mainClass>
                     <bundler>msi</bundler>
-                    <additionalAppResources>${project.build.directory}/jfx/app/additionalResources</additionalAppResources>
+                    <additionalAppResources>${project.build.directory}/jfx/app/additionalResources
+                    </additionalAppResources>
                     <vendor>SSAU</vendor>
                 </configuration>
                 <executions>

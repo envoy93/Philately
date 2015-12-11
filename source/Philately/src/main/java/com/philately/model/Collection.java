@@ -13,10 +13,6 @@ public class Collection implements java.io.Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "mark_id", referencedColumnName = "id")
-    private Mark mark;
-
     @Column(name = "INFO")
     private String info;
 
@@ -32,14 +28,6 @@ public class Collection implements java.io.Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Mark getMark() {
-        return mark;
-    }
-
-    public void setMark(Mark mark) {
-        this.mark = mark;
     }
 
     public String getInfo() {

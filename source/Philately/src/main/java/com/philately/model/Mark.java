@@ -33,6 +33,10 @@ public class Mark {
     @JoinColumn(name = "currency", referencedColumnName = "id")
     private Currency currency;
 
+    @OneToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "collection", referencedColumnName = "id")
+    private Collection collection;
+
     private int year;
 
     private boolean cancellation;
@@ -156,11 +160,27 @@ public class Mark {
         this.currency = currency;
     }
 
+    public Collection getCollection() {
+        return collection;
+    }
+
+    public void setCollection(Collection collection) {
+        this.collection = collection;
+    }
+
     public Image getImage() {
         if (Utility.getInstance().getFileImage(String.valueOf(getId())).exists()) {
             return new Image(Utility.getInstance().getFullPathToImage(String.valueOf(getId())));
         } else {
             return new Image(Utility.getInstance().getFullPathToImage(null));
+        }
+    }
+
+    public String getImageUrl() {
+        if (Utility.getInstance().getFileImage(String.valueOf(getId())).exists()) {
+            return Utility.getInstance().getFullPathToImage(String.valueOf(getId()));
+        } else {
+            return Utility.getInstance().getFullPathToImage(null);
         }
     }
 }

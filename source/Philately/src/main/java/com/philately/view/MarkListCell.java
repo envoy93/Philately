@@ -80,7 +80,7 @@ public class MarkListCell extends ListCell<Mark> {
         name.setWrapText(true);
         price.setText(mark.getPrice() + mark.getCurrency().getTitle() + ", " + mark.getEdition() + "шт. в тираже");
         price.setWrapText(true);
-        dt.setText(mark.getCountry().getTitle() + ", " + mark.getYear() + "г.");
+        dt.setText(mark.getCountry().getTitle() + ", " + mark.getYear() + "г." + (mark.isCancellation()? " Гашеная": ""));
         dt.setWrapText(true);
         info.setText("Серия: " + mark.getSeries() + ", бумага: " + mark.getPaper().getTitle() + ", размеры: " + mark.getSize());
         info.setWrapText(true);

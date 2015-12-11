@@ -176,15 +176,15 @@ public class EditFormController {
             mark.setSeparation(separationField.getText());
             mark.setSize(sizeField.getText());
 
+            Session session = HibernateUtil.getSession();
+            session.beginTransaction();
+            session.save(mark);
+            session.getTransaction().commit();
+
             //TODO create mark file if imageFile != null
             if (imageFile != null) {
                 copyAndResizeImage();
             }
-            Session session = HibernateUtil.getSession();
-
-            session.beginTransaction();
-            session.save(mark);
-            session.getTransaction().commit();
 
             okClicked = true;
             dialogStage.close();

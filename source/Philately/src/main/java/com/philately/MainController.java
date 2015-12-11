@@ -1,8 +1,16 @@
 package com.philately;
 
+import com.lowagie.text.*;
+import com.lowagie.text.Font;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.rtf.RtfWriter2;
+import com.lowagie.text.rtf.table.RtfTable;
 import com.philately.mark.MarkParamsCache;
 import com.philately.mark.MarksFilter;
 import com.philately.model.*;
+import com.philately.model.Collection;
+import com.philately.model.Color;
 import com.philately.model.Currency;
 import com.philately.view.DoubleTextField;
 import com.philately.view.IntegerTextField;
@@ -19,28 +27,36 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.hibernate.Criteria;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.Restrictions;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.awt.*;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by kirill on 22.10.2015.
@@ -71,6 +87,8 @@ public class MainController {
     private ChoiceBox colorFieldSearch;
     @FXML
     private ChoiceBox currencyFieldSearch;
+    @FXML
+    private ChoiceBox collectionFieldSearch;
 
     @FXML
     private ListView marksListView;
@@ -84,6 +102,16 @@ public class MainController {
     private VBox marksListVBox;
     @FXML
     private VBox markVBoxPanel;
+
+    @FXML
+    private ToggleButton inStockToggle;
+    @FXML
+    private VBox inStockParamsVBox;
+    @FXML
+    private TextArea inStockInformationTextArea;
+    @FXML
+    private IntegerTextField inStockCountIntegerField;
+
 
     private Mark selectedMark;
 
@@ -156,9 +184,9 @@ public class MainController {
             }
         });
 
+        //таблица с параметрами марки
         nameColumn.setCellValueFactory(new PropertyValueFactory<Property, String>("name"));
         valueColumn.setCellValueFactory(new PropertyValueFactory<Property, String>("value"));
-
         paramsData.add(new Property("Страна", ""));
         paramsData.add(new Property("Год выпуска", ""));
         paramsData.add(new Property("Гашение", ""));
@@ -170,8 +198,39 @@ public class MainController {
         paramsData.add(new Property("Бумага", ""));
         paramsData.add(new Property("Размер", ""));
         paramsData.add(new Property("Цвет", ""));
-
         markViewTable.setItems(paramsData);
+
+        inStockToggle.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Session session = HibernateUtil.getSession();
+                session.beginTransaction();
+                Collection collection = null;
+                if (!inStockToggle.isSelected()) {
+
+                    // delete collection
+                    if (selectedMark.getCollection() != null) {
+                        session.delete(selectedMark.getCollection());
+                    }
+                    selectedMark.setCollection(null);
+                } else {
+                    // create collection
+                    collection = new Collection();
+                    collection.setAmount(1);
+                    collection.setInfo("");
+                    session.save(collection);
+                    selectedMark.setCollection(collection);
+                }
+
+                session.save(selectedMark);
+                session.getTransaction().commit();
+                if (selectedMark != null) {
+                    setCollection(selectedMark.getCollection());
+                }
+            }
+        });
+
+        inStockParamsVBox.managedProperty().bind(inStockParamsVBox.visibleProperty());
 
     }
 
@@ -195,6 +254,30 @@ public class MainController {
         this.mainApp = mainApp;
     }
 
+    @FXML
+    private void handleOnSaveCollection() {
+        if ((selectedMark == null) || (selectedMark.getCollection() == null)) {
+            return;
+        }
+
+        if ((inStockCountIntegerField.getText().length() == 0) || ((inStockCountIntegerField.getText().length() > 0) && (inStockCountIntegerField.getInt() <= 0))) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initOwner(mainApp.getPrimaryStage());
+            alert.setTitle("Некорректные данные");
+            alert.setHeaderText("Пожалуйста, введите характеристики марки");
+            alert.setContentText("Количество экземпляров должно быть больше нуля");
+            alert.showAndWait();
+            return;
+        }
+
+        selectedMark.getCollection().setInfo(inStockInformationTextArea.getText());
+        selectedMark.getCollection().setAmount(inStockCountIntegerField.getInt());
+
+        Session session = HibernateUtil.getSession();
+        session.beginTransaction();
+        session.update(selectedMark.getCollection());
+        session.getTransaction().commit();
+    }
 
     @FXML
     private void handleExit() {
@@ -244,7 +327,11 @@ public class MainController {
 
             Session session = HibernateUtil.getSession();
             session.beginTransaction();
+            Collection collection = selectedMark.getCollection();
             session.delete(selectedMark);
+            if (collection != null) {
+                session.delete(selectedMark);
+            }
             session.getTransaction().commit();
 
             selectedMark = null;
@@ -303,6 +390,13 @@ public class MainController {
             criteria = criteria.add(Restrictions.eq("currency", currencyFieldSearch.getSelectionModel().getSelectedItem()));
         }
 
+
+        if (collectionFieldSearch.getSelectionModel().getSelectedIndex() == 1) {
+            criteria = criteria.add(Restrictions.isNotNull("collection"));
+        } else if (collectionFieldSearch.getSelectionModel().getSelectedIndex() == 2) {
+            criteria = criteria.add(Restrictions.isNull("collection"));
+        }
+
         marksListView.setItems(FXCollections.observableList(criteria.list()));
         marksListView.refresh();
         setMark(selectedMark);
@@ -323,7 +417,9 @@ public class MainController {
         } else {
             markToolbar.setVisible(true);
             markVBoxPanel.setVisible(true);
-            //TODO image
+
+            setCollection(mark.getCollection());
+
             markImage.setImage(mark.getImage());
             paramsData.get(0).setValue(mark.getCountry().getTitle());
             paramsData.get(1).setValue(String.valueOf(mark.getYear()));
@@ -338,5 +434,165 @@ public class MainController {
             paramsData.get(10).setValue(mark.getColor().getTitle());
             markViewTable.refresh();
         }
+    }
+
+    private void setCollection(Collection collection) {
+        if (collection != null) {
+            inStockToggle.setSelected(true);
+            inStockCountIntegerField.setText(String.valueOf(collection.getAmount()));
+            inStockInformationTextArea.setText(collection.getInfo());
+            inStockParamsVBox.setVisible(true);
+        } else {
+            inStockToggle.setSelected(false);
+            inStockParamsVBox.setVisible(false);
+        }
+    }
+
+
+    private void createXLSReport(String path) {
+        try {
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            HSSFSheet sheet = workbook.createSheet("FirstSheet");
+
+            HSSFRow rowhead = sheet.createRow((short) 0);
+            rowhead.createCell(0).setCellValue("№");
+            rowhead.createCell(1).setCellValue("Характеристика");
+            rowhead.createCell(2).setCellValue("Значение");
+
+            HSSFRow row = null;
+            short i = 1;
+            int number = 1;
+            for (Mark mark : (ObservableList<Mark>) marksListView.getItems()) {
+                row = sheet.createRow(i++);
+                row.createCell(0).setCellValue(number++);
+                row.createCell(1).setCellValue("Страна");
+                row.createCell(2).setCellValue(mark.getCountry().getTitle());
+                row = sheet.createRow(i++);
+                row.createCell(1).setCellValue("Год выпуска");
+                row.createCell(2).setCellValue(mark.getYear());
+                row = sheet.createRow(i++);
+                row.createCell(1).setCellValue("Гашение");
+                row.createCell(2).setCellValue((mark.isCancellation()) ? "Да" : "Нет");
+                row = sheet.createRow(i++);
+                row.createCell(1).setCellValue("Тематика");
+                row.createCell(2).setCellValue(mark.getTheme());
+                row = sheet.createRow(i++);
+                row.createCell(1).setCellValue("Серия");
+                row.createCell(2).setCellValue(mark.getSeries());
+                row = sheet.createRow(i++);
+                row.createCell(1).setCellValue("Номинал");
+                row.createCell(2).setCellValue(mark.getPrice() + mark.getCurrency().getTitle());
+                row = sheet.createRow(i++);
+                row.createCell(1).setCellValue("Тираж");
+                row.createCell(2).setCellValue(mark.getEdition());
+                row = sheet.createRow(i++);
+                row.createCell(1).setCellValue("Зубцовка");
+                row.createCell(2).setCellValue(mark.getSeparation());
+                row = sheet.createRow(i++);
+                row.createCell(1).setCellValue("Бумага");
+                row.createCell(2).setCellValue(mark.getPaper().getTitle());
+                row = sheet.createRow(i++);
+                row.createCell(1).setCellValue("Размер");
+                row.createCell(2).setCellValue(mark.getSize());
+                row = sheet.createRow(i++);
+                row.createCell(1).setCellValue("Цвет");
+                row.createCell(2).setCellValue(mark.getColor().getTitle());
+                row = sheet.createRow(i++);
+                row.createCell(1).setCellValue("");
+                row.createCell(2).setCellValue("");
+            }
+            FileOutputStream fileOut = new FileOutputStream(path);
+            workbook.write(fileOut);
+            fileOut.close();
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+    }
+
+    private void createRTFReport(String path) {
+        Document document = new Document();
+        try {
+            RtfWriter2.getInstance(document, new FileOutputStream(path));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        document.open();
+
+        Font fontParamTitle = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.BOLD);
+        fontParamTitle.setColor(java.awt.Color.darkGray);
+        Font fontParamHeader = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE + 2, Font.BOLDITALIC);
+        Font fontParamValue = FontFactory.getFont(FontFactory.HELVETICA, Font.DEFAULTSIZE, Font.NORMAL);
+        // PdfPTable table = new PdfPTable(2);
+        PdfPTable params = null;
+
+        try {
+            for (Mark mark : (ObservableList<Mark>) marksListView.getItems()) {
+                params = new PdfPTable(2);
+                params.setTotalWidth(100);
+                params.addCell(new Phrase("Характеристика", fontParamHeader));
+                params.addCell(new Phrase("Значение", fontParamHeader));
+                params.addCell(new Phrase("Изображение", fontParamTitle));
+                params.addCell(com.lowagie.text.Image.getInstance(mark.getImageUrl()));
+                params.addCell(new Phrase("Страна", fontParamTitle));
+                params.addCell(new Phrase(mark.getCountry().getTitle(), fontParamValue));
+                params.addCell(new Phrase("Год выпуска", fontParamTitle));
+                params.addCell(new Phrase(String.valueOf(mark.getYear()), fontParamValue));
+                params.addCell(new Phrase("Гашение", fontParamTitle));
+                params.addCell(new Phrase((mark.isCancellation()) ? "Да" : "Нет", fontParamValue));
+                params.addCell(new Phrase("Тема", fontParamTitle));
+                params.addCell(new Phrase(mark.getTheme(), fontParamValue));
+                params.addCell(new Phrase("Серия", fontParamTitle));
+                params.addCell(new Phrase(mark.getSeries(), fontParamValue));
+                params.addCell(new Phrase("Номинал", fontParamTitle));
+                params.addCell(new Phrase(mark.getPrice() + mark.getCurrency().getTitle(), fontParamValue));
+                params.addCell(new Phrase("Тираж", fontParamTitle));
+                params.addCell(new Phrase(mark.getEdition() + " шт.", fontParamValue));
+                params.addCell(new Phrase("Зубцовка", fontParamTitle));
+                params.addCell(new Phrase(mark.getSeparation(), fontParamValue));
+                params.addCell(new Phrase("Бумага", fontParamTitle));
+                params.addCell(new Phrase(mark.getPaper().getTitle(), fontParamValue));
+                params.addCell(new Phrase("Размер", fontParamTitle));
+                params.addCell(new Phrase(mark.getSize(), fontParamValue));
+                params.addCell(new Phrase("Цвет", fontParamTitle));
+                params.addCell(new Phrase(mark.getColor().getTitle(), fontParamValue));
+                params.setHeaderRows(1);
+                // table.addCell(new PdfPCell(params));
+                //table.completeRow();
+                document.add(params);
+
+            }
+            // document.add(table);
+
+
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        document.close();
+    }
+
+    @FXML
+    private void handleOnCreateReport() {
+
+        final FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Отчет rtf", "*.rtf"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Отчет xls", "*.xls"));
+        fileChooser.setTitle("Сохранить отчет");
+        File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
+        if (file == null) {
+            return;
+        }
+
+        if (fileChooser.getSelectedExtensionFilter().getDescription().equals("Отчет rtf")) {
+            createRTFReport(file.getPath());
+        } else {
+            createXLSReport(file.getPath());
+        }
+
     }
 }

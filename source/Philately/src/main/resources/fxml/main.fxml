@@ -25,7 +25,7 @@
                 <Menu mnemonicParsing="false" text="Каталог">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#handleNewMark" text="Добавить марку" />
-                        <MenuItem mnemonicParsing="false" text="Создать отчет" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleOnCreateReport" text="Создать отчет" />
                         <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Выйти" />
                     </items>
                 </Menu>
@@ -50,13 +50,13 @@
         </MenuBar>
         <ToolBar>
             <items>
-                <Button fx:id="saveAs" mnemonicParsing="false" onAction="#handleNewMark" text="Добавить">
+                <Button mnemonicParsing="false" onAction="#handleNewMark" text="Добавить">
                     <graphic>
                         <ImageView fitHeight="0.0" fitWidth="0.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button mnemonicParsing="false" text="Создать отчет" />
+                <Button onAction="#handleOnCreateReport" mnemonicParsing="false" text="Создать отчет" />
             </items>
         </ToolBar>
         <HBox fx:id="content" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
@@ -65,7 +65,7 @@
                     <items>
                         <GridPane>
                             <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
+                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="180.0" minWidth="180.0" prefWidth="180.0" />
                                 <ColumnConstraints hgrow="SOMETIMES" />
                             </columnConstraints>
                             <rowConstraints>
@@ -85,147 +85,151 @@
                           <content>
                             <AnchorPane>
                                  <children>
-                                            <VBox minWidth="170.0" prefWidth="170.0" spacing="5.0">
-                                                <children>
-                                                    <!--<ChoiceBox prefWidth="150.0">
-                                                        <items>
-                                                            <FXCollections fx:factory="observableArrayList">
-                                                                <String fx:value="Справочник" />
-                                                                <String fx:value="Коллекция" />
-                                                                <String fx:value="Везде" />
-                                                            </FXCollections>
-                                                        </items>
-                                                        <value>
-                                                            <String fx:value="Справочник" />
-                                                        </value>
-                                                    </ChoiceBox>-->
-            
-                                                    <Label text="Страна">
-                                                        <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <ChoiceBox fx:id="countryFieldSearch" prefWidth="150.0" />
-            
-                                                    <Label layoutX="10.0" layoutY="10.0" text="Год выпуска">
-                                                        <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <IntegerTextField fx:id="yearFieldSearch" prefWidth="150.0" />
-            
-                                                    <Label layoutX="10.0" layoutY="10.0" text="Тематика">
-                                                        <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <TextField fx:id="themeFieldSearch" layoutX="10.0" layoutY="27.0" prefWidth="150.0" />
-            
-                                                    <Label layoutX="10.0" layoutY="77.0" text="Зубцовка">
-                                                        <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <TextField fx:id="separationFieldSearch" layoutX="10.0" layoutY="52.0" prefWidth="150.0" />
-            
-                                                    <Label layoutX="10.0" layoutY="94.0" text="Бумага">
-                                                        <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <ChoiceBox fx:id="paperFieldSearch" layoutX="10.0" layoutY="111.0" prefWidth="150.0" />
-            
-                                                    <Label layoutX="10.0" layoutY="10.0" text="Тираж">
-                                                        <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <IntegerTextField fx:id="editionFieldSearch" prefWidth="150.0" />
-            
-                                                    <Label layoutX="10.0" layoutY="94.0" text="Цвет">
-                                                        <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <ChoiceBox fx:id="colorFieldSearch" layoutX="10.0" layoutY="111.0" prefWidth="150.0" />
-            
-                                                    <Label layoutX="10.0" layoutY="77.0" text="Размер">
-                                                        <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <TextField fx:id="sizeFieldSearch" layoutY="52.0" prefWidth="150.0" />
-            
-                                                    <Label layoutX="10.0" layoutY="77.0" text="Серия">
-                                                        <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <TextField fx:id="seriesFieldSearch" layoutX="10.0" layoutY="52.0" prefWidth="150.0" />
-            
-                                                    <Label layoutX="10.0" layoutY="77.0" text="Номинал">
-                                                        <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <HBox layoutX="10.0" layoutY="52.0" prefWidth="150.0">
-                                                        <children>
-                                                            <DoubleTextField fx:id="priceFieldSearch" />
-                                                            <ChoiceBox fx:id="currencyFieldSearch" />
-                                                        </children>
-                                                    </HBox>
-                                                    <Label layoutX="10.0" layoutY="77.0" text="Гашение">
-                                                        <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <HBox>
-                                                        <children>
-                                                            <ChoiceBox fx:id="cancellationFieldSearch" prefWidth="150.0">
-                                                                <items>
-                                                                    <FXCollections fx:factory="observableArrayList">
-                                                                        <String fx:value="-" />
-                                                                        <String fx:value="Да" />
-                                                                        <String fx:value="Нет" />
-                                                                    </FXCollections>
-                                                                </items>
-                                                                <value>
-                                                                    <String fx:value="-" />
-                                                                </value>
-                                                            </ChoiceBox>
-                                                        </children>
-                                                    </HBox>
-                                                    <Label layoutX="10.0" layoutY="77.0" text="В коллекции">
-                                                        <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <HBox>
-                                                        <children>
-                                                            <ChoiceBox prefWidth="150.0">
-                                                                <items>
-                                                                    <FXCollections fx:factory="observableArrayList">
-                                                                        <String fx:value="-" />
-                                                                        <String fx:value="Да" />
-                                                                        <String fx:value="Нет" />
-                                                                    </FXCollections>
-                                                                </items>
-                                                                <value>
-                                                                    <String fx:value="-" />
-                                                                </value>
-                                                            </ChoiceBox>
-                                                        </children>
-                                                    </HBox>
-                                                    <HBox alignment="TOP_CENTER">
-                                                        <children>
-                                                            <Button mnemonicParsing="false" onAction="#handleSearch" text="Поиск" />
-                                                        </children>
-                                                    </HBox>
-                                                </children>
-                                                <padding>
-                                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                </padding>
-                                            </VBox>
+                                    <HBox alignment="CENTER_LEFT" minWidth="160.0" prefWidth="160.0">
+                                       <children>
+                                                  <VBox minWidth="-Infinity" spacing="5.0">
+                                                      <children>
+                                                          <!--<ChoiceBox prefWidth="150.0">
+                                                              <items>
+                                                                  <FXCollections fx:factory="observableArrayList">
+                                                                      <String fx:value="Справочник" />
+                                                                      <String fx:value="Коллекция" />
+                                                                      <String fx:value="Везде" />
+                                                                  </FXCollections>
+                                                              </items>
+                                                              <value>
+                                                                  <String fx:value="Справочник" />
+                                                              </value>
+                                                          </ChoiceBox>-->
+                  
+                                                          <Label text="Страна">
+                                                              <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                              </font>
+                                                          </Label>
+                                                          <ChoiceBox fx:id="countryFieldSearch" prefWidth="150.0" />
+                  
+                                                          <Label layoutX="10.0" layoutY="10.0" text="Год выпуска">
+                                                              <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                              </font>
+                                                          </Label>
+                                                          <IntegerTextField fx:id="yearFieldSearch" prefWidth="150.0" promptText="Год выпуска" />
+                  
+                                                          <Label layoutX="10.0" layoutY="10.0" text="Тематика">
+                                                              <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                              </font>
+                                                          </Label>
+                                                          <TextField fx:id="themeFieldSearch" layoutX="10.0" layoutY="27.0" prefWidth="150.0" promptText="Тематика" />
+                  
+                                                          <Label layoutX="10.0" layoutY="77.0" text="Зубцовка">
+                                                              <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                              </font>
+                                                          </Label>
+                                                          <TextField fx:id="separationFieldSearch" layoutX="10.0" layoutY="52.0" prefWidth="150.0" promptText="Зубцовка" />
+                  
+                                                          <Label layoutX="10.0" layoutY="94.0" text="Бумага">
+                                                              <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                              </font>
+                                                          </Label>
+                                                          <ChoiceBox fx:id="paperFieldSearch" layoutX="10.0" layoutY="111.0" prefWidth="150.0" />
+                  
+                                                          <Label layoutX="10.0" layoutY="10.0" text="Тираж">
+                                                              <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                              </font>
+                                                          </Label>
+                                                          <IntegerTextField fx:id="editionFieldSearch" prefWidth="150.0" promptText="Тираж" />
+                  
+                                                          <Label layoutX="10.0" layoutY="94.0" text="Цвет">
+                                                              <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                              </font>
+                                                          </Label>
+                                                          <ChoiceBox fx:id="colorFieldSearch" layoutX="10.0" layoutY="111.0" prefWidth="150.0" />
+                  
+                                                          <Label layoutX="10.0" layoutY="77.0" text="Размер">
+                                                              <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                              </font>
+                                                          </Label>
+                                                          <TextField fx:id="sizeFieldSearch" layoutY="52.0" prefWidth="150.0" promptText="Размер" />
+                  
+                                                          <Label layoutX="10.0" layoutY="77.0" text="Серия">
+                                                              <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                              </font>
+                                                          </Label>
+                                                          <TextField fx:id="seriesFieldSearch" layoutX="10.0" layoutY="52.0" prefWidth="150.0" promptText="Серия" />
+                  
+                                                          <Label layoutX="10.0" layoutY="77.0" text="Номинал">
+                                                              <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                              </font>
+                                                          </Label>
+                                                          <HBox layoutX="10.0" layoutY="52.0" prefWidth="150.0">
+                                                              <children>
+                                                                  <DoubleTextField fx:id="priceFieldSearch" promptText="Номинал" />
+                                                                  <ChoiceBox fx:id="currencyFieldSearch" />
+                                                              </children>
+                                                          </HBox>
+                                                          <Label layoutX="10.0" layoutY="77.0" text="Гашение">
+                                                              <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                              </font>
+                                                          </Label>
+                                                          <HBox>
+                                                              <children>
+                                                                  <ChoiceBox fx:id="cancellationFieldSearch" prefWidth="150.0">
+                                                                      <items>
+                                                                          <FXCollections fx:factory="observableArrayList">
+                                                                              <String fx:value="-" />
+                                                                              <String fx:value="Да" />
+                                                                              <String fx:value="Нет" />
+                                                                          </FXCollections>
+                                                                      </items>
+                                                                      <value>
+                                                                          <String fx:value="-" />
+                                                                      </value>
+                                                                  </ChoiceBox>
+                                                              </children>
+                                                          </HBox>
+                                                          <Label layoutX="10.0" layoutY="77.0" text="В коллекции">
+                                                              <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                              </font>
+                                                          </Label>
+                                                          <HBox>
+                                                              <children>
+                                                                  <ChoiceBox fx:id="collectionFieldSearch" prefWidth="150.0">
+                                                                      <items>
+                                                                          <FXCollections fx:factory="observableArrayList">
+                                                                              <String fx:value="-" />
+                                                                              <String fx:value="Да" />
+                                                                              <String fx:value="Нет" />
+                                                                          </FXCollections>
+                                                                      </items>
+                                                                      <value>
+                                                                          <String fx:value="-" />
+                                                                      </value>
+                                                                  </ChoiceBox>
+                                                              </children>
+                                                          </HBox>
+                                                          <HBox alignment="TOP_CENTER">
+                                                              <children>
+                                                                  <Button mnemonicParsing="false" onAction="#handleSearch" text="Поиск" />
+                                                              </children>
+                                                          </HBox>
+                                                      </children>
+                                                      <padding>
+                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                      </padding>
+                                                  </VBox>
+                                       </children>
+                                    </HBox>
                                  </children>
                               </AnchorPane>
                           </content>
@@ -250,15 +254,51 @@
                                                 <ImageView fitHeight="0.0" fitWidth="0.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" />
                                             </graphic>
                                         </Button>
+                              <ToggleButton fx:id="inStockToggle" mnemonicParsing="false" text="В коллекции" />
                                     </items>
                                 </ToolBar>
-                                <HBox alignment="CENTER">
+                                <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
                                     <children>
-                                        <ImageView fx:id="markImage" fitHeight="128.0" fitWidth="128.0" pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fx:id="markImage" fitHeight="128.0" fitWidth="128.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin></ImageView>
+                                 </HBox.margin>
+                              </ImageView>
+                              <VBox fx:id="inStockParamsVBox" alignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <VBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Количество">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <IntegerTextField fx:id="inStockCountIntegerField" />
+                                          <Label text="Иформация">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <TextArea fx:id="inStockInformationTextArea" prefHeight="200.0" prefWidth="200.0" />
+                                          <HBox>
+                                             <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </padding>
+                                             <children>
+                                                <Button mnemonicParsing="false" onAction="#handleOnSaveCollection" text="Сохранить" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </VBox>
                                     </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                                 </HBox>
                         <TableView fx:id="markViewTable" VBox.vgrow="ALWAYS">
                           <columns>

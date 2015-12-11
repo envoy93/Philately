@@ -65,7 +65,7 @@ public class MainApp extends Application {
         });
         ///stage.getScene().getStylesheets().add("/fxml/main.css");
         primaryStage.initStyle(StageStyle.DECORATED);
-        primaryStage.setMinHeight(600);
+        primaryStage.setMinHeight(780);
         primaryStage.setMinWidth(800);
         primaryStage.centerOnScreen();
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
