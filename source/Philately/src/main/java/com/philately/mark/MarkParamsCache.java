@@ -27,23 +27,7 @@ public class MarkParamsCache {
     }
 
     private MarkParamsCache() {
-
-
-        for (Country country : (List<Country>) HibernateUtil.getSession().createCriteria(Country.class).list()) {
-            countries.put(country.getTitle(), country);
-        }
-
-        for (Color color : (List<Color>) HibernateUtil.getSession().createCriteria(Color.class).list()) {
-            colors.put(color.getTitle(), color);
-        }
-
-        for (Paper paper : (List<Paper>) HibernateUtil.getSession().createCriteria(Paper.class).list()) {
-            papers.put(paper.getTitle(), paper);
-        }
-
-        for (Currency c : (List<Currency>) HibernateUtil.getSession().createCriteria(Currency.class).list()) {
-            currency.put(c.getTitle(), c);
-        }
+        reCache();
     }
 
     public ArrayList<Country> getCountries(){
@@ -76,5 +60,27 @@ public class MarkParamsCache {
 
     public Currency getCurrency(String key){
         return currency.get(key);
+    }
+
+    public void reCache(){
+        countries.clear();
+        for (Country country : (List<Country>) HibernateUtil.getSession().createCriteria(Country.class).list()) {
+            countries.put(country.getTitle(), country);
+        }
+
+        colors.clear();
+        for (Color color : (List<Color>) HibernateUtil.getSession().createCriteria(Color.class).list()) {
+            colors.put(color.getTitle(), color);
+        }
+
+        papers.clear();
+        for (Paper paper : (List<Paper>) HibernateUtil.getSession().createCriteria(Paper.class).list()) {
+            papers.put(paper.getTitle(), paper);
+        }
+
+        currency.clear();
+        for (Currency c : (List<Currency>) HibernateUtil.getSession().createCriteria(Currency.class).list()) {
+            currency.put(c.getTitle(), c);
+        }
     }
 }

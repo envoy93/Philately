@@ -3,7 +3,7 @@ package com.philately;
 import com.philately.mark.MarkParamsCache;
 import com.philately.model.HibernateUtil;
 import com.philately.model.Mark;
-import com.sun.javafx.css.StyleManager;
+import com.philately.model.Paper;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -42,7 +42,7 @@ public class MainApp extends Application {
 
 
     public void showApp() throws Exception {
-       // StyleManager.getInstance().addUserAgentStylesheet(FlatterFX.class.getResource("flatterfx.css").toExternalForm());
+        // StyleManager.getInstance().addUserAgentStylesheet(FlatterFX.class.getResource("flatterfx.css").toExternalForm());
         String fxmlFile = "/fxml/main.fxml";
         FXMLLoader loader = new FXMLLoader();
         Parent root = (Parent) loader.load(getClass().getResourceAsStream(fxmlFile));
@@ -77,21 +77,6 @@ public class MainApp extends Application {
             }
         });
         primaryStage.show();
-
-       /* Session session = HibernateUtil.getSessionFactory().openSession();
-
-        session.beginTransaction();
-        Stock stock = new Stock();
-
-        stock.setStockCode("4715");
-        stock.setStockName("GENM");
-
-        session.save(stock);*/
-       /* Country country = new Country();
-        country.setTitle("123");
-        session.save(country);
-        session.getTransaction().commit();
-        session.close();*/
     }
 
 
@@ -130,8 +115,37 @@ public class MainApp extends Application {
         loadingThread.start();
     }
 
+    private boolean checkFiles() {
+        if (!Utility.getInstance().isFileExist("db.h2.db.h2.db")) {
+            return false;
+        }
+
+        if (!Utility.getInstance().isFileExist("default.jpg")) {
+            return false;
+        }
+
+        if (!Utility.getInstance().isFileExist("help.html")) {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public void start(Stage primaryStage) {
+        if (!checkFiles()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+         //   alert.initOwner(primaryStage);
+            alert.setTitle("Ошибка");
+            alert.setHeaderText("Пожалуйста, проверьте целостность файлов приложения");
+            alert.setContentText("Некоторые необходимые для работы приложения файлы отсутствуют, дальнейшая работа невозможна");
+
+            alert.showAndWait();
+
+            Platform.exit();
+            System.exit(0);
+        }
+
+
         final ProgressIndicator loadingIndicator = new ProgressIndicator();
         loadingIndicator.setPrefWidth(100);
         loadingIndicator.setPrefHeight(100);
@@ -139,9 +153,9 @@ public class MainApp extends Application {
 
         VBox root = new VBox(
                 new HBox(
-                    new StackPane(
-                            loadingIndicator
-                    )
+                        new StackPane(
+                                loadingIndicator
+                        )
                 )
         );
         root.setPadding(new Insets(20));
@@ -202,4 +216,24 @@ public class MainApp extends Application {
         return primaryStage;
     }
 
+    public void showPaperEditDialog() {
+        EditParamController editParamController = new EditParamController();
+
+        // Create the dialog Stage.
+        Stage dialogStage = new Stage();
+
+        dialogStage.setTitle("Виды бумаги");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(editParamController.createForm(Paper.class));
+        dialogStage.setScene(scene);
+        //dialogStage.setResizable(false);
+        dialogStage.setMinHeight(400);
+
+        dialogStage.setMaxHeight(dialogStage.getWidth());
+        dialogStage.setMinWidth(300);
+        editParamController.setDialogStage(dialogStage);
+        // Show the dialog and wait until the user closes it
+        dialogStage.showAndWait();
+    }
 }

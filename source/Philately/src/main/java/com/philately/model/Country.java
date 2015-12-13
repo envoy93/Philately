@@ -8,7 +8,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "COUNTRY")
-public class Country  implements java.io.Serializable{
+public class Country  implements java.io.Serializable, ParamWithTitle{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

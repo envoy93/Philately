@@ -17,6 +17,7 @@ import com.philately.view.converters.ColorClassConverter;
 import com.philately.view.converters.CountryClassConverter;
 import com.philately.view.converters.CurrencyClassConverter;
 import com.philately.view.converters.PaperClassConverter;
+import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -24,14 +25,19 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -111,37 +117,9 @@ public class MainController {
     private void initialize() {
 
         setMark(null);
-
-        Country defaultCountry = new Country();
-        defaultCountry.setId(-1);
-        defaultCountry.setTitle("-");
-        countryFieldSearch.setItems(FXCollections.observableList(getArrayWithDefaultElement(defaultCountry, MarkParamsCache.getInstance().getCountries())));
-        countryFieldSearch.getSelectionModel().selectFirst();
-        countryFieldSearch.setConverter(new CountryClassConverter());
-
-        Color defaultColor = new Color();
-        defaultColor.setId(-1);
-        defaultColor.setTitle("-");
-        colorFieldSearch.setItems(FXCollections.observableList(getArrayWithDefaultElement(defaultColor, MarkParamsCache.getInstance().getColors())));
-        colorFieldSearch.getSelectionModel().selectFirst();
-        colorFieldSearch.setConverter(new ColorClassConverter());
-
-        Paper defaultPaper = new Paper();
-        defaultPaper.setId(-1);
-        defaultPaper.setTitle("-");
-        paperFieldSearch.setItems(FXCollections.observableList(FXCollections.observableList(getArrayWithDefaultElement(defaultPaper, MarkParamsCache.getInstance().getPapers()))));
-        paperFieldSearch.getSelectionModel().selectFirst();
-        paperFieldSearch.setConverter(new PaperClassConverter());
-
-        Currency defaultCurrency = new Currency();
-        defaultCurrency.setId(-1);
-        defaultCurrency.setTitle("-");
-        currencyFieldSearch.setItems(FXCollections.observableList(FXCollections.observableList(getArrayWithDefaultElement(defaultCurrency, MarkParamsCache.getInstance().getCurrency()))));
-        currencyFieldSearch.getSelectionModel().selectFirst();
-        currencyFieldSearch.setConverter(new CurrencyClassConverter());
-
-
+        setChoiceBoxes();
         handleSearch();
+
         marksListView.setCellFactory(new Callback<ListView, ListCell>() {
             @Override
             public ListCell call(ListView param) {
@@ -219,6 +197,36 @@ public class MainController {
 
         inStockParamsVBox.managedProperty().bind(inStockParamsVBox.visibleProperty());
 
+    }
+
+    private void setChoiceBoxes() {
+        Country defaultCountry = new Country();
+        defaultCountry.setId(-1);
+        defaultCountry.setTitle("-");
+        countryFieldSearch.setItems(FXCollections.observableList(getArrayWithDefaultElement(defaultCountry, MarkParamsCache.getInstance().getCountries())));
+        countryFieldSearch.getSelectionModel().selectFirst();
+        countryFieldSearch.setConverter(new CountryClassConverter());
+
+        Color defaultColor = new Color();
+        defaultColor.setId(-1);
+        defaultColor.setTitle("-");
+        colorFieldSearch.setItems(FXCollections.observableList(getArrayWithDefaultElement(defaultColor, MarkParamsCache.getInstance().getColors())));
+        colorFieldSearch.getSelectionModel().selectFirst();
+        colorFieldSearch.setConverter(new ColorClassConverter());
+
+        Paper defaultPaper = new Paper();
+        defaultPaper.setId(-1);
+        defaultPaper.setTitle("-");
+        paperFieldSearch.setItems(FXCollections.observableList(FXCollections.observableList(getArrayWithDefaultElement(defaultPaper, MarkParamsCache.getInstance().getPapers()))));
+        paperFieldSearch.getSelectionModel().selectFirst();
+        paperFieldSearch.setConverter(new PaperClassConverter());
+
+        Currency defaultCurrency = new Currency();
+        defaultCurrency.setId(-1);
+        defaultCurrency.setTitle("-");
+        currencyFieldSearch.setItems(FXCollections.observableList(FXCollections.observableList(getArrayWithDefaultElement(defaultCurrency, MarkParamsCache.getInstance().getCurrency()))));
+        currencyFieldSearch.getSelectionModel().selectFirst();
+        currencyFieldSearch.setConverter(new CurrencyClassConverter());
     }
 
     public void widthResize() {
@@ -435,6 +443,10 @@ public class MainController {
         }
     }
 
+    @FXML
+    private void handleHelp() {
+        HostServicesFactory.getInstance(mainApp).showDocument(Utility.getInstance().getFullPathToFile("help.html"));
+    }
 
     private void createXLSReport(String path) {
         try {
@@ -581,5 +593,40 @@ public class MainController {
             createXLSReport(file.getPath());
         }
 
+    }
+
+    @FXML
+    public void handleEditPapers() {
+        mainApp.showPaperEditDialog();
+
+        setChoiceBoxes();
+        selectedMark = null;
+        handleSearch();
+    }
+
+    @FXML
+    public void handleAboutDialog() {
+
+        // Load the fxml file and create a new stage for the popup dialog.
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(MainApp.class.getResource("/fxml/about.fxml"));
+        VBox page = null;
+        try {
+            page = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Create the dialog Stage.
+        Stage dialogStage = new Stage();
+
+        dialogStage.setTitle("О программе");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(mainApp.getPrimaryStage());
+        Scene scene = new Scene(page);
+        dialogStage.setScene(scene);
+        dialogStage.setResizable(false);
+
+        // Show the dialog and wait until the user closes it
+        dialogStage.showAndWait();
     }
 }

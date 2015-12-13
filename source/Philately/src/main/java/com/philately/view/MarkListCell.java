@@ -76,7 +76,7 @@ public class MarkListCell extends ListCell<Mark> {
     private void addContent(Mark mark) {
         setText(null);
         //icon.setText(GeocachingIcons.getIcon(mark).toString());
-        name.setText(mark.getTheme());
+        name.setText(mark.getTheme() + ((mark.getCollection() != null)? ", в коллекции": ""));
         name.setWrapText(true);
         price.setText(mark.getPrice() + mark.getCurrency().getTitle() + ", " + mark.getEdition() + "шт. в тираже");
         price.setWrapText(true);

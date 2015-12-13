@@ -57,14 +57,14 @@
 
     <build>
 
-        <resources>
+        <!--<resources>
             <resource>
                 <directory>src/main/resources/</directory>
                 <excludes>
                     <exclude>db/*.*</exclude>
                 </excludes>
             </resource>
-        </resources>
+        </resources>-->
 
         <plugins>
             <plugin>
@@ -117,6 +117,12 @@
                                 </resource>
                                 <resource>
                                     <directory>src/main/resources/img</directory>
+                                    <includes>
+                                        <include>*.*</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>src/main/resources/help</directory>
                                     <includes>
                                         <include>*.*</include>
                                     </includes>

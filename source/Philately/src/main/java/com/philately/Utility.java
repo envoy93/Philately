@@ -35,6 +35,13 @@ public class Utility {
         return path;
     }
 
+    public String getFullPathToFile(String file) {
+        if (file == null) {
+            file = "default";
+        }
+        return "file:" + getAppPath() + "\\additionalAppResources\\" + file;
+    }
+
     public String getFullPathToImage(String image) {
         if (image == null) {
             image = "default";
@@ -47,5 +54,14 @@ public class Utility {
             name = "default";
         }
         return new File(getAppPath() + "\\additionalAppResources\\" + name + ".jpg");
+    }
+
+    public boolean isFileExist(String path){
+        File f = new File(getAppPath() + "\\additionalAppResources\\" + path);
+        if(f.exists() && !f.isDirectory()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

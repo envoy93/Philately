@@ -7,7 +7,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "Paper")
-public class Paper implements java.io.Serializable{
+public class Paper implements java.io.Serializable, ParamWithTitle{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
