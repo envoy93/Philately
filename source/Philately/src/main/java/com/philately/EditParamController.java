@@ -30,6 +30,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by kirill on 13.12.2015.
@@ -144,9 +145,13 @@ public class EditParamController {
     private void initItems() {
         List<Row> rows = new ArrayList<>();
         if (classType.isAssignableFrom(Paper.class)) {
-            for (Paper paper : MarkParamsCache.getInstance().getPapers()) {
-                rows.add(new Row(paper.getTitle()));
-            }
+            rows.addAll(MarkParamsCache.getInstance().getPapers().stream().map(param -> new Row(param.getTitle())).collect(Collectors.toList()));
+        } else if (classType.isAssignableFrom(Color.class)) {
+            rows.addAll(MarkParamsCache.getInstance().getColors().stream().map(param -> new Row(param.getTitle())).collect(Collectors.toList()));
+        } else if (classType.isAssignableFrom(Country.class)) {
+            rows.addAll(MarkParamsCache.getInstance().getCountries().stream().map(param -> new Row(param.getTitle())).collect(Collectors.toList()));
+        } else if (classType.isAssignableFrom(Currency.class)) {
+            rows.addAll(MarkParamsCache.getInstance().getCurrency().stream().map(param -> new Row(param.getTitle())).collect(Collectors.toList()));
         }
 
         data = FXCollections.observableArrayList(rows);

@@ -54,7 +54,7 @@ public class MarkParamsCache {
         return papers.get(key);
     }
 
-    public ArrayList<Paper> getCurrency(){
+    public ArrayList<Currency> getCurrency(){
         return new ArrayList(currency.values());
     }
 

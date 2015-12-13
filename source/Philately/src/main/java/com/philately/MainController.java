@@ -597,8 +597,30 @@ public class MainController {
 
     @FXML
     public void handleEditPapers() {
-        mainApp.showPaperEditDialog();
+        mainApp.showParamEditDialog(Paper.class, "Виды бумаги");
+        resetInputs();
+    }
 
+    @FXML
+    public void handleEditCountries() {
+        mainApp.showParamEditDialog(Country.class, "Виды стран");
+        resetInputs();
+    }
+
+    @FXML
+    public void handleEditCurrencies() {
+        mainApp.showParamEditDialog(Currency.class, "Виды валют");
+        resetInputs();
+    }
+
+    @FXML
+    public void handleEditColors() {
+        mainApp.showParamEditDialog(Color.class, "Виды цветности");
+        resetInputs();
+
+    }
+
+    private void resetInputs(){
         setChoiceBoxes();
         selectedMark = null;
         handleSearch();

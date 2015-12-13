@@ -34,9 +34,9 @@
                         <Menu mnemonicParsing="false" text="Характеристики">
                             <items>
                                 <MenuItem mnemonicParsing="false" text="Бумага" onAction="#handleEditPapers"/>
-                                <MenuItem mnemonicParsing="false" text="Валюта" />
-                                <MenuItem mnemonicParsing="false" text="Страна" />
-                                <MenuItem mnemonicParsing="false" text="Цвет" />
+                                <MenuItem mnemonicParsing="false" text="Валюта" onAction="#handleEditCurrencies"/>
+                                <MenuItem mnemonicParsing="false" text="Страна" onAction="#handleEditCountries"/>
+                                <MenuItem mnemonicParsing="false" text="Цвет" onAction="#handleEditColors"/>
                             </items>
                         </Menu>
                     </items>

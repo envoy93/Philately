@@ -216,16 +216,16 @@ public class MainApp extends Application {
         return primaryStage;
     }
 
-    public void showPaperEditDialog() {
+    public void showParamEditDialog(Class classType, String title) {
         EditParamController editParamController = new EditParamController();
 
         // Create the dialog Stage.
         Stage dialogStage = new Stage();
 
-        dialogStage.setTitle("Виды бумаги");
+        dialogStage.setTitle(title);
         dialogStage.initModality(Modality.WINDOW_MODAL);
         dialogStage.initOwner(primaryStage);
-        Scene scene = new Scene(editParamController.createForm(Paper.class));
+        Scene scene = new Scene(editParamController.createForm(classType));
         dialogStage.setScene(scene);
         //dialogStage.setResizable(false);
         dialogStage.setMinHeight(400);
