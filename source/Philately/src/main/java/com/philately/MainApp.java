@@ -179,7 +179,11 @@ public class MainApp extends Application {
         // Create the dialog Stage.
         Stage dialogStage = new Stage();
 
-        dialogStage.setTitle("Редактировать марку");
+        if (mark != null) {
+            dialogStage.setTitle("Редактировать марку");
+        } else {
+            dialogStage.setTitle("Добавить марку");
+        }
         dialogStage.initModality(Modality.WINDOW_MODAL);
         dialogStage.initOwner(primaryStage);
         Scene scene = new Scene(page);

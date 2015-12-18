@@ -143,12 +143,29 @@
                     <additionalAppResources>${project.build.directory}/jfx/app/additionalResources
                     </additionalAppResources>
                     <vendor>SSAU</vendor>
+                    <!--<bundleArguments>
+                        <runtime />
+                    </bundleArguments>-->
                 </configuration>
                 <executions>
-                    <execution>
+                    <!--<execution>
                         <phase>package</phase>
                         <goals>
                             <goal>native</goal>
+                        </goals>
+                    </execution>-->
+                    <execution>
+                        <id>create-jfxjar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build-jar</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>create-native</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build-native</goal>
                         </goals>
                     </execution>
                 </executions>
