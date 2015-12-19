@@ -339,6 +339,12 @@ public class MainController {
 
     @FXML
     private void handleSearch() {
+        marksListView.setItems(FXCollections.observableList(searchMark()));
+        marksListView.refresh();
+        setMark(selectedMark);
+    }
+
+    private List searchMark(){
         Criteria criteria = HibernateUtil.getSession().createCriteria(Mark.class);
         if (((Country) countryFieldSearch.getSelectionModel().getSelectedItem()).getId() >= 0) {
             criteria = criteria.add(Restrictions.eq("country", countryFieldSearch.getSelectionModel().getSelectedItem()));
@@ -395,9 +401,7 @@ public class MainController {
             criteria = criteria.add(Restrictions.isNull("collection"));
         }
 
-        marksListView.setItems(FXCollections.observableList(criteria.list()));
-        marksListView.refresh();
-        setMark(selectedMark);
+        return criteria.list();
     }
 
     @FXML
@@ -464,7 +468,7 @@ public class MainController {
             HSSFRow row = null;
             short i = 1;
             int number = 1;
-            for (Mark mark : (ObservableList<Mark>) marksListView.getItems()) {
+            for (Mark mark : (List<Mark>) searchMark()) {
                 row = sheet.createRow(i++);
                 row.createCell(0).setCellValue(number++);
                 row.createCell(1).setCellValue("Страна");
@@ -530,7 +534,7 @@ public class MainController {
         PdfPTable params = null;
 
         try {
-            for (Mark mark : (ObservableList<Mark>) marksListView.getItems()) {
+            for (Mark mark : (List<Mark>) searchMark()) {
                 params = new PdfPTable(2);
                 params.setTotalWidth(100);
                 params.addCell(new Phrase("Характеристика", fontParamHeader));
