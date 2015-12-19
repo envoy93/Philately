@@ -270,6 +270,9 @@ public class EditParamController {
 
                     Optional<String> result = dialog.showAndWait();
                     if (result.isPresent()) {
+                        if (result.get().equals(currentRow.getTitle())) {
+                            return;
+                        }
                         Criteria criteria = HibernateUtil.getSession().createCriteria(classType);
                         criteria.add(Restrictions.eq("title", result.get()));
 

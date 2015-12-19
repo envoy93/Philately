@@ -1,12 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox id="StackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" stylesheets="/fxml/main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-    <!--<stylesheets>
-        <String fx:value="@main.css" />
-    </stylesheets>-->
-    <children>
-
-    </children>
+<VBox id="StackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="241.0" prefWidth="600.0" stylesheets="/fxml/main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox alignment="CENTER" prefHeight="300.0" prefWidth="198.0" style="-fx-background-color: #ccc;">
+               <children>
+                  <Label text="Проект разработали:">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label text="студенты группы 6124 М 405">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label text="Ульянов А. В.">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label text="Шашов К. В.">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label text="Руководитель проекта:">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label text="доцент кафедры ПС ">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label text="Зеленко Л.С.">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="300.0" prefWidth="346.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label text="Данный проект представляет собой автоматизированную систему учета почтовых марок" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label text="В функционал программы включены следующие возможности:" wrapText="true" />
+                  <HBox prefWidth="200.0">
+                     <children>
+                        <VBox prefWidth="27.0" />
+                        <VBox prefHeight="90.0" prefWidth="258.0" HBox.hgrow="NEVER">
+                           <children>
+                              <Label text="- Управление каталогом марок" VBox.vgrow="ALWAYS" />
+                              <Label text="- Работа с пользовательской коллекцией" VBox.vgrow="ALWAYS" />
+                              <Label text="- Генерация отчета" VBox.vgrow="ALWAYS" />
+                              <Label text="- Ведение справочников характеристик марок" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
 </VBox>

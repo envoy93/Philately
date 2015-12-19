@@ -328,7 +328,10 @@ public class MainController {
                 session.delete(selectedMark);
             }
             session.getTransaction().commit();
-
+            try {
+                Utility.getInstance().getFileImage(selectedMark.getId().toString()).delete();
+            } catch (Exception ex) {
+            }
             selectedMark = null;
             handleSearch();
         }
@@ -620,7 +623,7 @@ public class MainController {
 
     }
 
-    private void resetInputs(){
+    private void resetInputs() {
         setChoiceBoxes();
         selectedMark = null;
         handleSearch();
