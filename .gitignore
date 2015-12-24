@@ -1,6 +1,8 @@
 #################
 ## Eclipse
 #################
+docs/er
+
 *.iml
 *.pydevproject
 .project

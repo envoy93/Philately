@@ -143,6 +143,7 @@
                     <additionalAppResources>${project.build.directory}/jfx/app/additionalResources
                     </additionalAppResources>
                     <vendor>SSAU</vendor>
+                    <appName>Philately</appName>
                     <!--<bundleArguments>
                         <runtime />
                     </bundleArguments>-->
@@ -175,11 +176,11 @@
                         <artifactId>mojo-executor</artifactId>
                         <version>2.2.0</version>
                     </dependency>
-                    <dependency>
+                   <!-- <dependency>
                         <groupId>ssau</groupId>
                         <artifactId>Philately</artifactId>
                         <version>1.0</version>
-                    </dependency>
+                    </dependency>-->
                 </dependencies>
             </plugin>
         </plugins>
